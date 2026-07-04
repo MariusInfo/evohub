@@ -53,6 +53,7 @@ public class EvoHubScreen extends Screen {
     public static boolean settingAllowTPA = true;
     public static boolean settingAllowTrade = true;
 
+    public static boolean sbShowHeader = true;
     public static boolean sbShowTu = true;
     public static boolean sbShowRank = true;
     public static boolean sbShowMoney = true;
@@ -105,6 +106,24 @@ public class EvoHubScreen extends Screen {
         if (guiScale >= 4) return 0.65f;
         if (guiScale >= 3) return 0.85f;
         return 1.0f;
+    }
+
+    private List<Integer> getVisibleMainTabs() {
+        List<Integer> visibleTabs = new ArrayList<>();
+        for (int i = 0; i < tabNames.length; i++) {
+            if (isCreative() && (i == 2 || i == 7 || i == 8 || i == 10)) continue;
+            visibleTabs.add(i);
+        }
+        return visibleTabs;
+    }
+
+    private int getMainMenuStartY(int sh, int visibleCount) {
+        int cols = 4;
+        int boxH = 92;
+        int gap = 14;
+        int rows = Math.max(1, (visibleCount + cols - 1) / cols);
+        int totalH = rows * boxH + (rows - 1) * gap;
+        return Math.max(72, (sh - totalH) / 2 + 48);
     }
 
     public static float getScoreboardUserScale() {
@@ -222,20 +241,16 @@ public class EvoHubScreen extends Screen {
 
         // ==== LOGICA PENTRU MENIUL PRINCIPAL (ACASĂ) ====
         if (currentTab == -1) {
-            List<Integer> visibleTabs = new ArrayList<>();
-            for (int i = 0; i < tabNames.length; i++) {
-                if (isCreative() && (i == 2 || i == 7 || i == 8 || i == 10)) continue;
-                visibleTabs.add(i);
-            }
+            List<Integer> visibleTabs = getVisibleMainTabs();
 
             int cols = 4;
-            int boxW = 100;
-            int boxH = 80;
-            int gap = 15;
+            int boxW = 112;
+            int boxH = 92;
+            int gap = 14;
             int totalCols = Math.min(visibleTabs.size(), cols);
             int totalW = totalCols * boxW + (totalCols - 1) * gap;
             int startX = (sw - totalW) / 2;
-            int startY = (sh - ((visibleTabs.size() / cols + 1) * boxH)) / 2 + 20;
+            int startY = getMainMenuStartY(sh, visibleTabs.size());
 
             for (int idx = 0; idx < visibleTabs.size(); idx++) {
                 int tabIndex = visibleTabs.get(idx);
@@ -457,7 +472,8 @@ public class EvoHubScreen extends Screen {
         else if (currentTab == 9) {
             if (!isEditingScoreboard) {
                 buttons.add(new CustomButton(settingShowScoreboard ? "§aDA" : "§cNU", contentX + 180, contentY + 15, 40, 20, () -> { settingShowScoreboard = !settingShowScoreboard; saveHudSettings(); this.init(); }));
-                buttons.add(new CustomButton("✎ Edit", contentX + 225, contentY + 15, 50, 20, () -> { isEditingScoreboard = true; this.init(); }));
+                buttons.add(new CustomButton("✎ Edit", contentX + 225, contentY + 15, 50, 20, () -> { if (this.minecraft != null) this.minecraft.setScreen(new ScoreboardLayoutScreen()); }));
+                buttons.add(new CustomButton("Elemente", contentX + 280, contentY + 15, 70, 20, () -> { isEditingScoreboard = true; this.init(); }));
 
                 buttons.add(new CustomButton(settingAllowTPA ? "§aDA" : "§cNU", contentX + 180, contentY + 45, 40, 20, () -> { settingAllowTPA = !settingAllowTPA; org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.PacketHandler.C2S_SaveSettings(settingAllowTPA, settingAllowTrade)); this.init(); }));
                 buttons.add(new CustomButton(settingAllowTrade ? "§aDA" : "§cNU", contentX + 180, contentY + 75, 40, 20, () -> { settingAllowTrade = !settingAllowTrade; org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.PacketHandler.C2S_SaveSettings(settingAllowTPA, settingAllowTrade)); this.init(); }));
@@ -470,32 +486,18 @@ public class EvoHubScreen extends Screen {
             } else {
                 buttons.add(new CustomButton("< Înapoi", contentX, contentY - 10, 60, 20, () -> { isEditingScoreboard = false; this.init(); }));
                 int ey = contentY + 15;
+                buttons.add(new CustomButton(sbShowHeader ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowHeader = !sbShowHeader; saveHudSettings(); this.init(); })); ey += 22;
                 buttons.add(new CustomButton(sbShowTu ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowTu = !sbShowTu; saveHudSettings(); this.init(); })); ey += 22;
                 buttons.add(new CustomButton(sbShowRank ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowRank = !sbShowRank; saveHudSettings(); this.init(); })); ey += 22;
                 buttons.add(new CustomButton(sbShowMoney ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowMoney = !sbShowMoney; saveHudSettings(); this.init(); })); ey += 22;
                 buttons.add(new CustomButton(sbShowPlaytime ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowPlaytime = !sbShowPlaytime; saveHudSettings(); this.init(); })); ey += 22;
 
                 int ex2 = contentX + 180; int ey2 = contentY + 15;
-                if (!isCreative()) {
-                    buttons.add(new CustomButton(sbShowCombat ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowCombat = !sbShowCombat; saveHudSettings(); this.init(); })); ey2 += 22;
-                    buttons.add(new CustomButton(sbShowJobs ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowJobs = !sbShowJobs; saveHudSettings(); this.init(); })); ey2 += 22;
-                }
+                buttons.add(new CustomButton(sbShowCombat ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowCombat = !sbShowCombat; saveHudSettings(); this.init(); })); ey2 += 22;
+                buttons.add(new CustomButton(sbShowJobs ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowJobs = !sbShowJobs; saveHudSettings(); this.init(); })); ey2 += 22;
                 buttons.add(new CustomButton(sbShowInfo ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowInfo = !sbShowInfo; saveHudSettings(); this.init(); }));
 
-                int controlY = contentY + 120;
-                buttons.add(new CustomButton("<", contentX + 130, controlY, 20, 20, () -> cycleScoreboardPosition(-1)));
-                buttons.add(new CustomButton(getScoreboardPositionName(), contentX + 155, controlY, 110, 20, () -> cycleScoreboardPosition(1)));
-                buttons.add(new CustomButton(">", contentX + 270, controlY, 20, 20, () -> cycleScoreboardPosition(1)));
-
-                controlY += 24;
-                buttons.add(new CustomButton("-", contentX + 130, controlY, 20, 20, () -> adjustScoreboardScale(-10)));
-                buttons.add(new CustomButton(sbScalePercent + "%", contentX + 155, controlY, 60, 20, () -> { sbScalePercent = 100; saveHudSettings(); this.init(); }));
-                buttons.add(new CustomButton("+", contentX + 220, controlY, 20, 20, () -> adjustScoreboardScale(10)));
-
-                controlY += 24;
-                buttons.add(new CustomButton("<", contentX + 130, controlY, 20, 20, () -> cycleScoreboardWidth(-1)));
-                buttons.add(new CustomButton(getScoreboardWidthName(), contentX + 155, controlY, 70, 20, () -> cycleScoreboardWidth(1)));
-                buttons.add(new CustomButton(">", contentX + 230, controlY, 20, 20, () -> cycleScoreboardWidth(1)));
+                buttons.add(new CustomButton("✎ Mutare pe ecran", contentX + 130, contentY + 132, 140, 20, () -> { if (this.minecraft != null) this.minecraft.setScreen(new ScoreboardLayoutScreen()); }));
             }
         }
     }
@@ -511,8 +513,9 @@ public class EvoHubScreen extends Screen {
 
         // ==== RANDARE MENIU PRINCIPAL (ACASĂ) ====
         if (currentTab == -1) {
-            g.drawCenteredString(this.font, "§l⚡ EVO CRAFT HUB", sw / 2, sh / 2 - 120, 0xFF83B755);
-            g.drawCenteredString(this.font, "§7Alege o secțiune pentru a continua", sw / 2, sh / 2 - 105, 0xAAAAAA);
+            int titleY = Math.max(18, getMainMenuStartY(sh, getVisibleMainTabs().size()) - 48);
+            g.drawCenteredString(this.font, "§l⚡ EVO CRAFT HUB", sw / 2, titleY, 0xFF83B755);
+            g.drawCenteredString(this.font, "§7Alege o secțiune pentru a continua", sw / 2, titleY + 15, 0xAAAAAA);
             for (CustomButton b : buttons) { b.render(g, smx, smy, this.font); }
             g.pose().popPose();
             return;
@@ -567,22 +570,15 @@ public class EvoHubScreen extends Screen {
             } else {
                 g.drawString(this.font, "§e§lSelectează elementele vizibile:", contentX + 80, contentY - 5, 0xFFFFFF, false);
                 int ey = contentY + 20;
+                g.drawString(this.font, "Server", contentX, ey, 0xFFFFFF, false); ey += 22;
                 g.drawString(this.font, "Numele Meu", contentX, ey, 0xFFFFFF, false); ey += 22;
                 g.drawString(this.font, "Rank-ul", contentX, ey, 0xFFFFFF, false); ey += 22;
                 g.drawString(this.font, "Bani", contentX, ey, 0xFFFFFF, false); ey += 22;
                 g.drawString(this.font, "Ore Jucate", contentX, ey, 0xFFFFFF, false);
                 int ex2 = contentX + 180; int ey2 = contentY + 20;
-                if (!isCreative()) {
-                    g.drawString(this.font, "Kills/Decese", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
-                    g.drawString(this.font, "Secțiune Joburi", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
-                }
+                g.drawString(this.font, "Kills/Decese", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
+                g.drawString(this.font, "Secțiune Joburi", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
                 g.drawString(this.font, "Informații Server", ex2, ey2, 0xFFFFFF, false);
-                int controlY = contentY + 125;
-                g.drawString(this.font, "Pozitie HUD", contentX, controlY, 0xFFFFFF, false);
-                controlY += 24;
-                g.drawString(this.font, "Marime HUD", contentX, controlY, 0xFFFFFF, false);
-                controlY += 24;
-                g.drawString(this.font, "Latime HUD", contentX, controlY, 0xFFFFFF, false);
             }
         }
 
@@ -776,20 +772,25 @@ public class EvoHubScreen extends Screen {
         public void render(GuiGraphics g, int mx, int my, net.minecraft.client.gui.Font font) {
             if(!visible) return;
             boolean hover = (mx >= x && mx <= x + w && my >= y && my <= y + h);
-
-            // Card Style Glassmorphism
-            fillRounded(g, x, y, w, h, hover ? 0xDD141C14 : 0xAA050805);
-            outlineRounded(g, x, y, w, h, hover ? 0xFF83B755 : 0xFF3A592D);
-
-            if(icon != null) {
-                g.pose().pushPose();
-                g.pose().translate(x + w / 2f - 16, y + h / 2f - 22, 0);
-                g.pose().scale(2.0f, 2.0f, 1.0f); // Mărim iconița
-                g.renderItem(icon, 0, 0);
-                g.pose().popPose();
-            }
-
-            g.drawCenteredString(font, text, x + w / 2, y + h - 18, hover ? 0xFFFFFF : 0xAAAAAA);
+            EvoHubTheme.drawIconCard(g, font, text, getMainCardSubtitle(text), icon, x, y, w, h, hover);
         }
+    }
+
+    private String getMainCardSubtitle(String text) {
+        return switch (text) {
+            case "Servere" -> "Alege lumea";
+            case "Profilul Meu" -> "Statistici";
+            case "Cariera Mea" -> "Joburi";
+            case "Clasamente" -> "Topuri";
+            case "Protecții" -> "Terenuri";
+            case "Ploturi" -> "Creative";
+            case "Teleportare" -> "TPA";
+            case "Casele Mele" -> "Homes";
+            case "Kit-uri" -> "Pachete";
+            case "Warp-uri" -> "Locatii";
+            case "Setări" -> "Preferinte";
+            case "Crate-uri" -> "Chei";
+            default -> "";
+        };
     }
 }
