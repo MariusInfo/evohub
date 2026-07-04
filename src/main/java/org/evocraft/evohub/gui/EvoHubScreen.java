@@ -571,7 +571,7 @@ public class EvoHubScreen extends Screen {
 
         for (int i = 0; i < allJobIds.length; i++) {
             String jId = allJobIds[i]; String dName = displayNames[i]; net.minecraft.world.item.ItemStack jIcon = allJobIcons[i];
-            int jLevel = 0; double jXp = 0; double jReq = 100; boolean jActive = false;
+            long jLevel = 0L; double jXp = 0; double jReq = 100; boolean jActive = false;
 
             for (JobInfo info : activeJobs) {
                 if (info.icon.getItem() == jIcon.getItem()) { jLevel = info.level; jXp = info.currentXp; jReq = info.requiredXp; jActive = info.isActive; break; }
