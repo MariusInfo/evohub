@@ -68,20 +68,48 @@ public class ScoreboardOverlay {
 
         GuiGraphics g = event.getGuiGraphics();
         double guiScale = mc.getWindow().getGuiScale();
-        float finalScale = 1.0f;
-        if (guiScale >= 3) finalScale = 0.85f;
-        if (guiScale >= 4) finalScale = 0.70f;
+        float autoScale = 1.0f;
+        if (guiScale >= 3) autoScale = 0.85f;
+        if (guiScale >= 4) autoScale = 0.70f;
+        float finalScale = autoScale * EvoHubScreen.getScoreboardUserScale();
 
         int screenWidth = event.getWindow().getGuiScaledWidth();
         int screenHeight = event.getWindow().getGuiScaledHeight();
         String playerName = mc.player.getGameProfile().getName();
 
-        int boxWidth = 180;
+        int boxWidth = EvoHubScreen.getScoreboardWidth();
         int totalHeight = calculateTotalHeight();
 
         g.pose().pushPose();
-        float scaledX = (screenWidth / finalScale) - boxWidth - 5;
-        float scaledY = ((screenHeight / finalScale) - totalHeight) / 2;
+        int margin = 5;
+        float scaledScreenWidth = screenWidth / finalScale;
+        float scaledScreenHeight = screenHeight / finalScale;
+        float scaledX;
+        float scaledY;
+        switch (EvoHubScreen.sbPosition) {
+            case EvoHubScreen.SB_TOP_LEFT -> {
+                scaledX = margin;
+                scaledY = margin;
+            }
+            case EvoHubScreen.SB_TOP_RIGHT -> {
+                scaledX = scaledScreenWidth - boxWidth - margin;
+                scaledY = margin;
+            }
+            case EvoHubScreen.SB_BOTTOM_LEFT -> {
+                scaledX = margin;
+                scaledY = scaledScreenHeight - totalHeight - margin;
+            }
+            case EvoHubScreen.SB_BOTTOM_RIGHT -> {
+                scaledX = scaledScreenWidth - boxWidth - margin;
+                scaledY = scaledScreenHeight - totalHeight - margin;
+            }
+            default -> {
+                scaledX = scaledScreenWidth - boxWidth - margin;
+                scaledY = (scaledScreenHeight - totalHeight) / 2.0f;
+            }
+        }
+        scaledX = Math.max(margin, scaledX);
+        scaledY = Math.max(margin, scaledY);
         g.pose().scale(finalScale, finalScale, 1.0f);
 
         int x = (int) scaledX;

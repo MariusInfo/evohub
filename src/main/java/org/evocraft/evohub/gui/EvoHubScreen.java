@@ -10,6 +10,7 @@ import net.minecraft.world.item.Items;
 import org.evocraft.evocore.client.ClientBalanceData;
 import org.evocraft.evocore.client.ClientStatsData;
 import org.evocraft.evohub.client.ClientCratesData;
+import org.evocraft.evohub.client.EvoHubClientSettings;
 import org.evocraft.evohub.network.EvoHubPacketHandler;
 import org.evocraft.evojobs.client.ClientJobsData;
 import org.evocraft.evojobs.client.ClientJobsData.JobInfo;
@@ -60,6 +61,26 @@ public class EvoHubScreen extends Screen {
     public static boolean sbShowJobs = false;
     public static boolean sbShowInfo = true;
 
+    public static final int SB_TOP_LEFT = 0;
+    public static final int SB_TOP_RIGHT = 1;
+    public static final int SB_BOTTOM_LEFT = 2;
+    public static final int SB_BOTTOM_RIGHT = 3;
+    public static final int SB_RIGHT_CENTER = 4;
+    public static final int SB_POSITION_COUNT = 5;
+
+    public static final int SB_WIDTH_COMPACT = 0;
+    public static final int SB_WIDTH_NORMAL = 1;
+    public static final int SB_WIDTH_WIDE = 2;
+    public static final int SB_WIDTH_MODE_COUNT = 3;
+
+    public static int sbPosition = SB_RIGHT_CENTER;
+    public static int sbScalePercent = 100;
+    public static int sbWidthMode = SB_WIDTH_NORMAL;
+
+    static {
+        EvoHubClientSettings.load();
+    }
+
     private EditBox blockInput;
     private EditBox homeNameInput;
     private final List<CustomButton> buttons = new ArrayList<>();
@@ -84,6 +105,58 @@ public class EvoHubScreen extends Screen {
         if (guiScale >= 4) return 0.65f;
         if (guiScale >= 3) return 0.85f;
         return 1.0f;
+    }
+
+    public static float getScoreboardUserScale() {
+        return Math.max(70, Math.min(130, sbScalePercent)) / 100.0f;
+    }
+
+    public static int getScoreboardWidth() {
+        return switch (sbWidthMode) {
+            case SB_WIDTH_COMPACT -> 160;
+            case SB_WIDTH_WIDE -> 215;
+            default -> 180;
+        };
+    }
+
+    public static String getScoreboardPositionName() {
+        return switch (sbPosition) {
+            case SB_TOP_LEFT -> "Sus stanga";
+            case SB_TOP_RIGHT -> "Sus dreapta";
+            case SB_BOTTOM_LEFT -> "Jos stanga";
+            case SB_BOTTOM_RIGHT -> "Jos dreapta";
+            default -> "Dreapta mijloc";
+        };
+    }
+
+    public static String getScoreboardWidthName() {
+        return switch (sbWidthMode) {
+            case SB_WIDTH_COMPACT -> "Stramt";
+            case SB_WIDTH_WIDE -> "Lat";
+            default -> "Normal";
+        };
+    }
+
+    private void saveHudSettings() {
+        EvoHubClientSettings.save();
+    }
+
+    private void cycleScoreboardPosition(int delta) {
+        sbPosition = Math.floorMod(sbPosition + delta, SB_POSITION_COUNT);
+        saveHudSettings();
+        this.init();
+    }
+
+    private void cycleScoreboardWidth(int delta) {
+        sbWidthMode = Math.floorMod(sbWidthMode + delta, SB_WIDTH_MODE_COUNT);
+        saveHudSettings();
+        this.init();
+    }
+
+    private void adjustScoreboardScale(int delta) {
+        sbScalePercent = Math.max(70, Math.min(130, sbScalePercent + delta));
+        saveHudSettings();
+        this.init();
     }
 
     private void fillRounded(GuiGraphics g, int x, int y, int w, int h, int color) {
@@ -383,7 +456,7 @@ public class EvoHubScreen extends Screen {
         }
         else if (currentTab == 9) {
             if (!isEditingScoreboard) {
-                buttons.add(new CustomButton(settingShowScoreboard ? "§aDA" : "§cNU", contentX + 180, contentY + 15, 40, 20, () -> { settingShowScoreboard = !settingShowScoreboard; this.init(); }));
+                buttons.add(new CustomButton(settingShowScoreboard ? "§aDA" : "§cNU", contentX + 180, contentY + 15, 40, 20, () -> { settingShowScoreboard = !settingShowScoreboard; saveHudSettings(); this.init(); }));
                 buttons.add(new CustomButton("✎ Edit", contentX + 225, contentY + 15, 50, 20, () -> { isEditingScoreboard = true; this.init(); }));
 
                 buttons.add(new CustomButton(settingAllowTPA ? "§aDA" : "§cNU", contentX + 180, contentY + 45, 40, 20, () -> { settingAllowTPA = !settingAllowTPA; org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.PacketHandler.C2S_SaveSettings(settingAllowTPA, settingAllowTrade)); this.init(); }));
@@ -397,17 +470,32 @@ public class EvoHubScreen extends Screen {
             } else {
                 buttons.add(new CustomButton("< Înapoi", contentX, contentY - 10, 60, 20, () -> { isEditingScoreboard = false; this.init(); }));
                 int ey = contentY + 15;
-                buttons.add(new CustomButton(sbShowTu ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowTu = !sbShowTu; this.init(); })); ey += 22;
-                buttons.add(new CustomButton(sbShowRank ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowRank = !sbShowRank; this.init(); })); ey += 22;
-                buttons.add(new CustomButton(sbShowMoney ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowMoney = !sbShowMoney; this.init(); })); ey += 22;
-                buttons.add(new CustomButton(sbShowPlaytime ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowPlaytime = !sbShowPlaytime; this.init(); })); ey += 22;
+                buttons.add(new CustomButton(sbShowTu ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowTu = !sbShowTu; saveHudSettings(); this.init(); })); ey += 22;
+                buttons.add(new CustomButton(sbShowRank ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowRank = !sbShowRank; saveHudSettings(); this.init(); })); ey += 22;
+                buttons.add(new CustomButton(sbShowMoney ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowMoney = !sbShowMoney; saveHudSettings(); this.init(); })); ey += 22;
+                buttons.add(new CustomButton(sbShowPlaytime ? "§aDA" : "§cNU", contentX + 130, ey, 40, 20, () -> { sbShowPlaytime = !sbShowPlaytime; saveHudSettings(); this.init(); })); ey += 22;
 
                 int ex2 = contentX + 180; int ey2 = contentY + 15;
                 if (!isCreative()) {
-                    buttons.add(new CustomButton(sbShowCombat ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowCombat = !sbShowCombat; this.init(); })); ey2 += 22;
-                    buttons.add(new CustomButton(sbShowJobs ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowJobs = !sbShowJobs; this.init(); })); ey2 += 22;
+                    buttons.add(new CustomButton(sbShowCombat ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowCombat = !sbShowCombat; saveHudSettings(); this.init(); })); ey2 += 22;
+                    buttons.add(new CustomButton(sbShowJobs ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowJobs = !sbShowJobs; saveHudSettings(); this.init(); })); ey2 += 22;
                 }
-                buttons.add(new CustomButton(sbShowInfo ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowInfo = !sbShowInfo; this.init(); }));
+                buttons.add(new CustomButton(sbShowInfo ? "§aDA" : "§cNU", ex2 + 80, ey2, 40, 20, () -> { sbShowInfo = !sbShowInfo; saveHudSettings(); this.init(); }));
+
+                int controlY = contentY + 120;
+                buttons.add(new CustomButton("<", contentX + 130, controlY, 20, 20, () -> cycleScoreboardPosition(-1)));
+                buttons.add(new CustomButton(getScoreboardPositionName(), contentX + 155, controlY, 110, 20, () -> cycleScoreboardPosition(1)));
+                buttons.add(new CustomButton(">", contentX + 270, controlY, 20, 20, () -> cycleScoreboardPosition(1)));
+
+                controlY += 24;
+                buttons.add(new CustomButton("-", contentX + 130, controlY, 20, 20, () -> adjustScoreboardScale(-10)));
+                buttons.add(new CustomButton(sbScalePercent + "%", contentX + 155, controlY, 60, 20, () -> { sbScalePercent = 100; saveHudSettings(); this.init(); }));
+                buttons.add(new CustomButton("+", contentX + 220, controlY, 20, 20, () -> adjustScoreboardScale(10)));
+
+                controlY += 24;
+                buttons.add(new CustomButton("<", contentX + 130, controlY, 20, 20, () -> cycleScoreboardWidth(-1)));
+                buttons.add(new CustomButton(getScoreboardWidthName(), contentX + 155, controlY, 70, 20, () -> cycleScoreboardWidth(1)));
+                buttons.add(new CustomButton(">", contentX + 230, controlY, 20, 20, () -> cycleScoreboardWidth(1)));
             }
         }
     }
@@ -489,6 +577,12 @@ public class EvoHubScreen extends Screen {
                     g.drawString(this.font, "Secțiune Joburi", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
                 }
                 g.drawString(this.font, "Informații Server", ex2, ey2, 0xFFFFFF, false);
+                int controlY = contentY + 125;
+                g.drawString(this.font, "Pozitie HUD", contentX, controlY, 0xFFFFFF, false);
+                controlY += 24;
+                g.drawString(this.font, "Marime HUD", contentX, controlY, 0xFFFFFF, false);
+                controlY += 24;
+                g.drawString(this.font, "Latime HUD", contentX, controlY, 0xFFFFFF, false);
             }
         }
 
