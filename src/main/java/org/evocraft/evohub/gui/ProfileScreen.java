@@ -32,7 +32,7 @@ public class ProfileScreen extends Screen {
         this.deaths = deaths;
 
         this.allJobs = new ArrayList<>(jobs);
-        this.allJobs.sort((j1, j2) -> Integer.compare(j2.level, j1.level));
+        this.allJobs.sort((j1, j2) -> Long.compare(j2.level, j1.level));
         this.isSelf = Minecraft.getInstance().player != null && Minecraft.getInstance().player.getGameProfile().getName().equals(playerName);
     }
 
