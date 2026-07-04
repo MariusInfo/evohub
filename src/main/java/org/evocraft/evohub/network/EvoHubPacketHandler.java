@@ -685,7 +685,7 @@ public class EvoHubPacketHandler {
                         player.getInventory().add(item.copy());
                     }
                 }
-                org.evocraft.evocore.data.KitManager.get().executeRewardCommands(player, kit);
+                org.evocraft.evocore.data.KitManager.get().grantCrateKeys(player, kit);
 
                 pCds.put(kit.name.toLowerCase(), now);
                 player.sendSystemMessage(Component.literal("§a✔ You received the §l" + kit.name + "§a kit!"));
