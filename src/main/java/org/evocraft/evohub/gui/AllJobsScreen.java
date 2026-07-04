@@ -20,7 +20,7 @@ public class AllJobsScreen extends Screen {
     private final List<JobInfo> jobs;
 
     public AllJobsScreen(Screen parent, String playerName, List<JobInfo> jobs) {
-        super(Component.literal("Joburi: " + playerName));
+        super(Component.literal("Jobs: " + playerName));
         this.parent = parent;
         this.playerName = playerName;
         this.jobs = jobs;
@@ -61,14 +61,14 @@ public class AllJobsScreen extends Screen {
         g.pose().pushPose();
         g.pose().translate(x + w / 2.0f, y - 15, 0);
         g.pose().scale(1.3f, 1.3f, 1.0f);
-        g.drawCenteredString(this.font, "CARIERE: " + playerName.toUpperCase(), 0, 0, BORDER_COLOR);
+        g.drawCenteredString(this.font, "CAREERS: " + playerName.toUpperCase(), 0, 0, BORDER_COLOR);
         g.pose().popPose();
 
         int listX = x + 15;
         int currentY = y + 25;
 
         if (jobs.isEmpty()) {
-            g.drawCenteredString(this.font, "Acest jucător nu are joburi.", x + w / 2, y + 150, 0xFFAAAAAA);
+            g.drawCenteredString(this.font, "This player has no jobs.", x + w / 2, y + 150, 0xFFAAAAAA);
         } else {
             for (JobInfo job : jobs) {
                 fillRounded(g, listX, currentY, w - 30, 40, CARD_BG);
@@ -80,9 +80,9 @@ public class AllJobsScreen extends Screen {
                 g.renderItem(job.icon, 0, 0);
                 g.pose().popPose();
 
-                String status = job.isActive ? "§aActiv" : "§cInactiv";
+                String status = job.isActive ? "§aActive" : "§cInactive";
                 g.drawString(this.font, job.name.toUpperCase(), listX + 40, currentY + 8, TEXT_COLOR, false);
-                g.drawString(this.font, "Nivel: §e" + job.level + " §f| " + status, listX + 40, currentY + 22, TEXT_COLOR, false);
+                g.drawString(this.font, "Level: §e" + job.level + " §f| " + status, listX + 40, currentY + 22, TEXT_COLOR, false);
 
                 String xpTxt = "§b" + (int)job.currentXp + " §f/ " + (int)job.requiredXp;
                 g.drawString(this.font, xpTxt, listX + w - 35 - this.font.width(xpTxt), currentY + 8, TEXT_COLOR, false);
@@ -95,7 +95,7 @@ public class AllJobsScreen extends Screen {
             }
         }
 
-        g.drawCenteredString(this.font, "Apasă click oriunde pentru a închide", x + w / 2, y + h - 15, 0xFF777777);
+        g.drawCenteredString(this.font, "Click anywhere to close", x + w / 2, y + h - 15, 0xFF777777);
 
         super.render(g, mouseX, mouseY, partialTick);
     }

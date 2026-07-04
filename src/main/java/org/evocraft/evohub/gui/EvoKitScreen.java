@@ -63,10 +63,10 @@ public class EvoKitScreen extends Screen {
         EvoHubTheme.drawPanel(g, x, y, PANEL_W, PANEL_H);
 
         if (isLoading) {
-            EvoHubTheme.drawTitle(g, this.font, "KIT-URI EVOCRAFT", "Se descarcă pachetele de pe server...", sw / 2, y + 14);
-            g.drawCenteredString(this.font, "§eSe încarcă...", sw / 2, y + PANEL_H / 2, 0xFFFFFF);
+            EvoHubTheme.drawTitle(g, this.font, "EVOCRAFT KITS", "Downloading kits from the server...", sw / 2, y + 14);
+            g.drawCenteredString(this.font, "§eLoading...", sw / 2, y + PANEL_H / 2, 0xFFFFFF);
         } else if (previewingKit == null) {
-            EvoHubTheme.drawTitle(g, this.font, "KIT-URI EVOCRAFT", "Alege un pachet configurat", sw / 2, y + 14);
+            EvoHubTheme.drawTitle(g, this.font, "EVOCRAFT KITS", "Choose a configured kit", sw / 2, y + 14);
             renderKitList(g, smx, smy, x, y, sw);
         } else {
             hoveredItem = renderKitPreview(g, smx, smy, x, y, sw);
@@ -82,14 +82,14 @@ public class EvoKitScreen extends Screen {
     private void renderKitList(GuiGraphics g, int smx, int smy, int x, int y, int sw) {
         int backX = x + 18;
         int backY = y + PANEL_H - 30;
-        EvoHubTheme.drawButton(g, this.font, "< Înapoi Hub", backX, backY, 95, 20, isHover(smx, smy, backX, backY, 95, 20));
+        EvoHubTheme.drawButton(g, this.font, "< Back to Hub", backX, backY, 95, 20, isHover(smx, smy, backX, backY, 95, 20));
 
         int totalKits = loadedKits.size();
         int totalPages = (int) Math.ceil((double) totalKits / KITS_PER_PAGE);
         if (currentPage >= totalPages && totalPages > 0) currentPage = totalPages - 1;
 
         if (totalPages > 1) {
-            g.drawCenteredString(this.font, "Pagina " + (currentPage + 1) + " din " + totalPages, sw / 2, y + PANEL_H - 22, EvoHubTheme.TEXT_MUTED);
+            g.drawCenteredString(this.font, "Page " + (currentPage + 1) + " of " + totalPages, sw / 2, y + PANEL_H - 22, EvoHubTheme.TEXT_MUTED);
 
             int px = sw / 2 - 72;
             int nx = sw / 2 + 52;
@@ -99,7 +99,7 @@ public class EvoKitScreen extends Screen {
         }
 
         if (loadedKits.isEmpty()) {
-            g.drawCenteredString(this.font, "§cNu există kituri configurate.", sw / 2, y + 165, 0xFFFFFF);
+            g.drawCenteredString(this.font, "§cNo kits are configured.", sw / 2, y + 165, 0xFFFFFF);
             return;
         }
 
@@ -148,7 +148,7 @@ public class EvoKitScreen extends Screen {
     }
 
     private ItemStack renderKitPreview(GuiGraphics g, int smx, int smy, int x, int y, int sw) {
-        EvoHubTheme.drawTitle(g, this.font, "PACHET: " + previewingKit.name, "Treci cu mouse-ul peste iteme pentru detalii", sw / 2, y + 14);
+        EvoHubTheme.drawTitle(g, this.font, "KIT: " + previewingKit.name, "Hover items to view details", sw / 2, y + 14);
 
         int startX = x + 34;
         int startY = y + 58;
@@ -178,16 +178,16 @@ public class EvoKitScreen extends Screen {
             }
         }
 
-        g.drawString(this.font, "Timp de așteptare: §e" + previewingKit.cooldown, x + 35, y + PANEL_H - 55, 0xFFFFFF, false);
-        g.drawString(this.font, "Permisiune necesară: §f" + previewingKit.permission, x + 35, y + PANEL_H - 40, EvoHubTheme.TEXT_MUTED, false);
+        g.drawString(this.font, "Cooldown: §e" + previewingKit.cooldown, x + 35, y + PANEL_H - 55, 0xFFFFFF, false);
+        g.drawString(this.font, "Required permission: §f" + previewingKit.permission, x + 35, y + PANEL_H - 40, EvoHubTheme.TEXT_MUTED, false);
 
         int backBtnX = x + 20;
         int backBtnY = y + PANEL_H - 30;
-        EvoHubTheme.drawButton(g, this.font, "< Înapoi Kituri", backBtnX, backBtnY, 100, 20, isHover(smx, smy, backBtnX, backBtnY, 100, 20));
+        EvoHubTheme.drawButton(g, this.font, "< Back to Kits", backBtnX, backBtnY, 100, 20, isHover(smx, smy, backBtnX, backBtnY, 100, 20));
 
         int claimX = x + (PANEL_W / 2) - 62;
         int claimY = y + PANEL_H - 45;
-        EvoHubTheme.drawButton(g, this.font, "REVENDICĂ", claimX, claimY, 124, 25, isHover(smx, smy, claimX, claimY, 124, 25));
+        EvoHubTheme.drawButton(g, this.font, "CLAIM", claimX, claimY, 124, 25, isHover(smx, smy, claimX, claimY, 124, 25));
 
         return hoveredItem;
     }

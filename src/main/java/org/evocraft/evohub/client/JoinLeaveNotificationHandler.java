@@ -129,7 +129,7 @@ public class JoinLeaveNotificationHandler {
             event.setCanceled(true);
             String clean = raw.replaceAll("§.", "");
             String[] parts = clean.split(" ");
-            String playerName = parts.length > 1 ? parts[1] : "Un jucător";
+            String playerName = parts.length > 1 ? parts[1] : "A player";
             addDeathNotification(playerName, raw);
             return;
         }
@@ -270,15 +270,15 @@ public class JoinLeaveNotificationHandler {
             String subtitleText = "";
 
             if (n.type == NotifType.JOIN) {
-                themeColor = 0xFF83B755; subtitleText = "§aA intrat pe server"; // Tematica verde evo
+                themeColor = 0xFF83B755; subtitleText = "§aJoined the server"; // Tematica verde evo
             } else if (n.type == NotifType.LEAVE) {
-                themeColor = 0xFFFF5555; subtitleText = "§cA ieșit de pe server";
+                themeColor = 0xFFFF5555; subtitleText = "§cLeft the server";
             } else if (n.type == NotifType.SWITCH) {
-                themeColor = 0xFF55FFFF; subtitleText = "§bA intrat pe " + n.extraMsg;
+                themeColor = 0xFF55FFFF; subtitleText = "§bJoined " + n.extraMsg;
             } else if (n.type == NotifType.TPA) {
-                themeColor = 0xFFFFAA00; subtitleText = "§eDorește să se teleporteze la tine!";
+                themeColor = 0xFFFFAA00; subtitleText = "§eWants to teleport to you!";
             } else if (n.type == NotifType.TPA_HERE) {
-                themeColor = 0xFFFFAA00; subtitleText = "§eDorește să te teleportezi la el!";
+                themeColor = 0xFFFFAA00; subtitleText = "§eWants you to teleport to them!";
             } else if (n.type == NotifType.DEATH) {
                 themeColor = 0xFFFF2222;
             } else if (n.type == NotifType.EVENT) {

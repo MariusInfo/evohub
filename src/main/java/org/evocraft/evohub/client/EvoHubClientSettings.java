@@ -38,6 +38,7 @@ public class EvoHubClientSettings {
         EvoHubScreen.sbShowCombat = settings.showCombat;
         EvoHubScreen.sbShowJobs = settings.showJobs;
         EvoHubScreen.sbShowInfo = settings.showInfo;
+        EvoHubScreen.sbShowVote = settings.showVote;
         EvoHubScreen.sbPosition = clamp(settings.position, 0, EvoHubScreen.SB_POSITION_COUNT - 1);
         EvoHubScreen.sbScalePercent = clamp(settings.scalePercent, 70, 130);
         EvoHubScreen.sbWidthMode = clamp(settings.widthMode, 0, EvoHubScreen.SB_WIDTH_MODE_COUNT - 1);
@@ -61,6 +62,7 @@ public class EvoHubClientSettings {
         settings.showCombat = EvoHubScreen.sbShowCombat;
         settings.showJobs = EvoHubScreen.sbShowJobs;
         settings.showInfo = EvoHubScreen.sbShowInfo;
+        settings.showVote = EvoHubScreen.sbShowVote;
         settings.position = EvoHubScreen.sbPosition;
         settings.scalePercent = EvoHubScreen.sbScalePercent;
         settings.widthMode = EvoHubScreen.sbWidthMode;
@@ -120,6 +122,7 @@ public class EvoHubClientSettings {
         boolean showCombat = true;
         boolean showJobs = false;
         boolean showInfo = true;
+        boolean showVote = true;
         int position = EvoHubScreen.SB_RIGHT_CENTER;
         int scalePercent = 100;
         int widthMode = EvoHubScreen.SB_WIDTH_NORMAL;

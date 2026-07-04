@@ -31,12 +31,12 @@ public class ScoreboardOverlay {
 
     public enum HudElement {
         HEADER("header", "Server"),
-        NAME("name", "Nume"),
+        NAME("name", "Name"),
         RANK("rank", "Rank"),
-        MONEY("money", "Bani"),
-        PLAYTIME("playtime", "Ore"),
+        MONEY("money", "Money"),
+        PLAYTIME("playtime", "Playtime"),
         COMBAT("combat", "Combat"),
-        JOBS("jobs", "Joburi"),
+        JOBS("jobs", "Jobs"),
         INFO("info", "Info"),
         VOTE("vote", "Vote");
 
@@ -228,7 +228,9 @@ public class ScoreboardOverlay {
             y += MODULE_HEIGHT + MODULE_GAP;
         }
 
-        putPlacement(placements, HudElement.VOTE, baseX, baseY, 0, y, baseScale);
+        if (isElementVisible(HudElement.VOTE)) {
+            putPlacement(placements, HudElement.VOTE, baseX, baseY, 0, y, baseScale);
+        }
         return placements;
     }
 
@@ -245,7 +247,7 @@ public class ScoreboardOverlay {
         }
         if (isElementVisible(HudElement.JOBS)) totalHeight += getElementDrawHeight(HudElement.JOBS) + MODULE_GAP;
         if (isElementVisible(HudElement.INFO)) totalHeight += MODULE_HEIGHT + MODULE_GAP;
-        totalHeight += MODULE_HEIGHT;
+        if (isElementVisible(HudElement.VOTE)) totalHeight += MODULE_HEIGHT;
         return totalHeight;
     }
 
@@ -263,7 +265,7 @@ public class ScoreboardOverlay {
         boolean isCreative = EvoHubScreen.isCreative();
         return switch (element) {
             case HEADER -> EvoHubScreen.sbShowHeader;
-            case VOTE -> true;
+            case VOTE -> EvoHubScreen.sbShowVote;
             case NAME -> EvoHubScreen.sbShowTu;
             case RANK -> EvoHubScreen.sbShowRank;
             case MONEY -> EvoHubScreen.sbShowMoney;
@@ -319,7 +321,7 @@ public class ScoreboardOverlay {
             }
             case PLAYTIME -> {
                 int totalSecs = ClientStatsData.playtimeSeconds;
-                String timeStr = (totalSecs < 3600) ? (totalSecs / 60) + " min" : (totalSecs / 3600) + " ore";
+                String timeStr = (totalSecs < 3600) ? (totalSecs / 60) + " min" : (totalSecs / 3600) + " hours";
                 g.drawString(mc.font, "⌚ §b" + timeStr, 4, 7, 0xFFFFFF, true);
             }
             case COMBAT -> {
@@ -349,12 +351,12 @@ public class ScoreboardOverlay {
     }
 
     private static void drawJobs(GuiGraphics g, Minecraft mc, int width) {
-        g.drawString(mc.font, "💼 §a§lJob-uri", 5, 5, 0xFFFFFF, true);
+        g.drawString(mc.font, "💼 §a§lJobs", 5, 5, 0xFFFFFF, true);
         int jobY = 18;
         for (JobInfo job : ClientJobsData.activeJobs) {
             if (!job.isActive) continue;
             g.renderItem(job.icon, 5, jobY);
-            g.drawString(mc.font, "§f" + job.name + " §7[Niv " + job.level + "]", 26, jobY, 0xFFFFFF, true);
+            g.drawString(mc.font, "§f" + job.name + " §7[Lv. " + job.level + "]", 26, jobY, 0xFFFFFF, true);
 
             int barWidth = Math.max(20, width - 35);
             int barX = 26;
@@ -375,7 +377,7 @@ public class ScoreboardOverlay {
     }
 
     private static String getRankText(Minecraft mc) {
-        String myRank = "§7Membru";
+        String myRank = "§7Member";
         if (CustomTabListHandler.syncedRanks.containsKey(mc.player.getUUID())) {
             myRank = CustomTabListHandler.applyRankColor(CustomTabListHandler.syncedRanks.get(mc.player.getUUID()));
         } else if (ClientStatsData.rank != null && !ClientStatsData.rank.isEmpty()) {

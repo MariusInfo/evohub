@@ -19,13 +19,13 @@ public class ScoreboardLayoutScreen extends Screen {
     private double dragOffsetY;
 
     public ScoreboardLayoutScreen() {
-        super(Component.literal("Editare Scoreboard"));
+        super(Component.literal("Scoreboard Editor"));
     }
 
     @Override
     protected void init() {
         int y = 10;
-        addRenderableWidget(Button.builder(Component.literal("Gata"), button -> {
+        addRenderableWidget(Button.builder(Component.literal("Done"), button -> {
             EvoHubClientSettings.save();
             if (this.minecraft != null) this.minecraft.setScreen(new EvoHubScreen(9));
         }).bounds(10, y, 55, 20).build());
@@ -34,12 +34,12 @@ public class ScoreboardLayoutScreen extends Screen {
             if (selected != null) EvoHubClientSettings.resetHudElement(selected.id);
         }).bounds(70, y, 95, 20).build());
 
-        addRenderableWidget(Button.builder(Component.literal("Reset toate"), button -> EvoHubClientSettings.resetHudLayout()).bounds(170, y, 85, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Reset all"), button -> EvoHubClientSettings.resetHudLayout()).bounds(170, y, 85, 20).build());
 
-        addRenderableWidget(Button.builder(Component.literal("Scara -"), button -> adjustSelectedScale(-10)).bounds(270, y, 60, 20).build());
-        addRenderableWidget(Button.builder(Component.literal("Scara +"), button -> adjustSelectedScale(10)).bounds(335, y, 60, 20).build());
-        addRenderableWidget(Button.builder(Component.literal("Latime -"), button -> adjustSelectedWidth(-10)).bounds(410, y, 65, 20).build());
-        addRenderableWidget(Button.builder(Component.literal("Latime +"), button -> adjustSelectedWidth(10)).bounds(480, y, 65, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Scale -"), button -> adjustSelectedScale(-10)).bounds(270, y, 60, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Scale +"), button -> adjustSelectedScale(10)).bounds(335, y, 60, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Width -"), button -> adjustSelectedWidth(-10)).bounds(410, y, 65, 20).build());
+        addRenderableWidget(Button.builder(Component.literal("Width +"), button -> adjustSelectedWidth(10)).bounds(480, y, 65, 20).build());
     }
 
     @Override
@@ -52,11 +52,11 @@ public class ScoreboardLayoutScreen extends Screen {
 
         g.fill(6, 6, Math.min(this.width - 6, 560), 58, 0xDD050805);
         drawOutline(g, 6, 6, Math.min(this.width - 12, 554), 52, 0xFF3A592D);
-        String selectedName = selected != null ? selected.label : "Nimic";
+        String selectedName = selected != null ? selected.label : "None";
         EvoHubClientSettings.HudElementSettings settings = selected != null ? EvoHubClientSettings.getHudElement(selected.id) : null;
-        String sizeText = settings != null ? "Scara: " + settings.scalePercent + "%  Latime: " + settings.widthPercent + "%" : "";
-        g.drawString(this.font, "§a§lEditor Scoreboard §7- trage modulul selectat cu mouse-ul", 12, 36, 0xFFFFFF, false);
-        g.drawString(this.font, "§fSelectat: §e" + selectedName + " §8| §7" + sizeText, 12, 48, 0xFFFFFF, false);
+        String sizeText = settings != null ? "Scale: " + settings.scalePercent + "%  Width: " + settings.widthPercent + "%" : "";
+        g.drawString(this.font, "§a§lScoreboard Editor §7- drag the selected module", 12, 36, 0xFFFFFF, false);
+        g.drawString(this.font, "§fSelected: §e" + selectedName + " §8| §7" + sizeText, 12, 48, 0xFFFFFF, false);
 
         super.render(g, mouseX, mouseY, partialTick);
     }

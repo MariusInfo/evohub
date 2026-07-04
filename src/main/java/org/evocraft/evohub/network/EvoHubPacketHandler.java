@@ -72,7 +72,7 @@ public class EvoHubPacketHandler {
 
     // --- UTILA PENTRU CULORILE IN CHAT ---
     public static String applyRankColorServer(String prefix) {
-        if (prefix == null || prefix.trim().isEmpty()) return "§7Membru";
+        if (prefix == null || prefix.trim().isEmpty()) return "§7Member";
         prefix = prefix.replace('&', '§');
         if (prefix.contains("§")) return prefix;
         String lower = prefix.toLowerCase();
@@ -99,7 +99,7 @@ public class EvoHubPacketHandler {
         ServerPlayer player = event.getPlayer();
         String rawMessage = event.getRawText();
 
-        String rankPrefix = serverRankCache.getOrDefault(player.getUUID(), "§7Membru");
+        String rankPrefix = serverRankCache.getOrDefault(player.getUUID(), "§7Member");
         rankPrefix = applyRankColorServer(rankPrefix);
 
         Component chatComponent = Component.literal(rankPrefix + " §f" + player.getGameProfile().getName() + " §8» §7" + rawMessage);
@@ -389,15 +389,15 @@ public class EvoHubPacketHandler {
                                     if (wonItem.hasTag() && wonItem.getTag().contains("EvoMoney")) {
                                         int amount = wonItem.getTag().getInt("EvoMoney");
                                         player.getServer().getCommands().performPrefixedCommand(player.getServer().createCommandSourceStack(), "eco give " + username + " " + amount);
-                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fAi primit: §a" + amount + " Lei§f!"));
+                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fYou received: §a" + amount + " Lei§f!"));
                                     } else if (wonItem.hasTag() && wonItem.getTag().contains("EvoKey")) {
                                         String kType = wonItem.getTag().getString("EvoKey");
                                         int kAmt = wonItem.getTag().getInt("EvoKeyAmount");
                                         player.getServer().getCommands().performPrefixedCommand(player.getServer().createCommandSourceStack(), "evo givekey " + username + " " + kType + " " + kAmt);
-                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fAi primit: §d" + kAmt + "x Chei " + kType.toUpperCase() + "§f!"));
+                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fYou received: §d" + kAmt + "x " + kType.toUpperCase() + " Keys§f!"));
                                     } else {
                                         player.getInventory().add(wonItem.copy());
-                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fAi primit: §b" + wonItem.getHoverName().getString() + "§f!"));
+                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fYou received: §b" + wonItem.getHoverName().getString() + "§f!"));
                                     }
                                 });
                             }
@@ -519,13 +519,13 @@ public class EvoHubPacketHandler {
                 if (player == null) return;
 
                 if (org.evocraft.evocore.combat.CombatLogManager.isInCombat(player)) {
-                    player.sendSystemMessage(Component.literal("§c✖ Nu te poți teleporta la Warp cât ești în combat!"));
+                    player.sendSystemMessage(Component.literal("§c✖ You cannot teleport to a warp while in combat!"));
                     return;
                 }
 
                 org.evocraft.evocore.data.WarpManager.Warp w = org.evocraft.evocore.data.WarpManager.get().warps.get(warpName.toLowerCase());
                 if (w == null) {
-                    player.sendSystemMessage(Component.literal("§cAcest warp nu mai există!"));
+                    player.sendSystemMessage(Component.literal("§cThis warp no longer exists!"));
                     return;
                 }
 
@@ -534,14 +534,14 @@ public class EvoHubPacketHandler {
 
                 if (warpCooldowns.containsKey(uuid)) {
                     if (currentTime - warpCooldowns.get(uuid) < 5500) {
-                        player.sendSystemMessage(Component.literal("§cSe procesează deja o teleportare... Așteaptă!"));
+                        player.sendSystemMessage(Component.literal("§cA teleport is already being processed... Please wait!"));
                         return;
                     }
                 }
                 warpCooldowns.put(uuid, currentTime);
 
                 net.minecraft.world.phys.Vec3 startPos = player.position();
-                player.sendSystemMessage(Component.literal("§eTeleportare în §l5 secunde§e... Nu te mișca!"));
+                player.sendSystemMessage(Component.literal("§eTeleporting in §l5 seconds§e... Do not move!"));
 
                 new java.util.Timer().schedule(new java.util.TimerTask() {
                     @Override
@@ -549,13 +549,13 @@ public class EvoHubPacketHandler {
                         if (player.getServer() != null) {
                             player.getServer().execute(() -> {
                                 if (player.position().distanceTo(startPos) > 0.5) {
-                                    player.sendSystemMessage(Component.literal("§cTeleportare anulată deoarece te-ai mișcat!"));
+                                    player.sendSystemMessage(Component.literal("§cTeleport canceled because you moved!"));
                                 } else {
                                     net.minecraft.resources.ResourceKey<net.minecraft.world.level.Level> dim = net.minecraft.resources.ResourceKey.create(net.minecraft.core.registries.Registries.DIMENSION, new net.minecraft.resources.ResourceLocation(w.dimension));
                                     net.minecraft.server.level.ServerLevel level = player.getServer().getLevel(dim);
                                     if (level != null) {
                                         player.teleportTo(level, w.x, w.y, w.z, w.yaw, w.pitch);
-                                        player.sendSystemMessage(Component.literal("§aAi fost teleportat la §l" + w.name + "§a!"));
+                                        player.sendSystemMessage(Component.literal("§aYou were teleported to §l" + w.name + "§a!"));
                                     }
                                 }
                             });
@@ -687,7 +687,7 @@ public class EvoHubPacketHandler {
                 }
 
                 pCds.put(kit.name.toLowerCase(), now);
-                player.sendSystemMessage(Component.literal("§a✔ Ai primit kit-ul §l" + kit.name + "§a!"));
+                player.sendSystemMessage(Component.literal("§a✔ You received the §l" + kit.name + "§a kit!"));
             });
             ctx.get().setPacketHandled(true); return true;
         }

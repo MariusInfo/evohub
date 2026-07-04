@@ -72,7 +72,7 @@ public class EvoCratesCommand {
             try (PreparedStatement stmt = conn.prepareStatement(query)) {
                 stmt.setString(1, targetPlayer); stmt.setString(2, crateName.toLowerCase());
                 stmt.setInt(3, amount); stmt.setInt(4, amount); stmt.executeUpdate();
-                source.sendSuccess(() -> Component.literal("§a[EvoHub] I-ai dat §e" + amount + "x Chei " + crateName + " §ajucătorului §f" + targetPlayer), false);
+                source.sendSuccess(() -> Component.literal("§a[EvoHub] Gave §e" + amount + "x " + crateName + " Keys §ato §f" + targetPlayer), false);
             } catch (Exception e) {}
         }).start();
         return 1;
@@ -96,13 +96,13 @@ public class EvoCratesCommand {
                     stmt.addBatch(); // Le adăugăm în "coș" ca să nu dăm crash la baza de date
 
                     // Anunțăm jucătorul că a primit cadoul!
-                    player.sendSystemMessage(Component.literal("§8[§a🎁§8] §aAi primit §e" + amount + "x Chei " + crateName + " §ade la un Administrator!"));
+                    player.sendSystemMessage(Component.literal("§8[§a🎁§8] §aYou received §e" + amount + "x " + crateName + " Keys §afrom an Administrator!"));
                     count++;
                 }
                 stmt.executeBatch(); // Le salvăm pe toate simultan
 
                 final int finalCount = count;
-                source.sendSuccess(() -> Component.literal("§a[EvoHub] Ai dat cu succes §e" + amount + "x Chei " + crateName + " §ala §b" + finalCount + " §ajucători online!"), true);
+                source.sendSuccess(() -> Component.literal("§a[EvoHub] Successfully gave §e" + amount + "x " + crateName + " Keys §ato §b" + finalCount + " §aonline players!"), true);
             } catch (Exception e) {
                 source.sendFailure(Component.literal("§c[EvoHub] Eroare la baza de date!"));
             }
@@ -121,7 +121,7 @@ public class EvoCratesCommand {
         ItemStack itemInHand = player.getMainHandItem();
         if (itemInHand.isEmpty()) { source.sendFailure(Component.literal("§c[EvoHub] Ține un item în mână!")); return 0; }
 
-        if (CrateManager.addRewardToFile(crateName, itemInHand, chance)) source.sendSuccess(() -> Component.literal("§aAi adăugat item-ul în crate-ul §6" + crateName + " §acu șansa §b" + chance + "%"), false);
+        if (CrateManager.addRewardToFile(crateName, itemInHand, chance)) source.sendSuccess(() -> Component.literal("§aAdded the item to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
         else source.sendFailure(Component.literal("§c[EvoHub] Crate-ul nu există!"));
         return 1;
     }
@@ -132,7 +132,7 @@ public class EvoCratesCommand {
         moneyItem.getOrCreateTag().putInt("EvoMoney", amount);
 
         if (CrateManager.addRewardToFile(crateName, moneyItem, chance)) {
-            source.sendSuccess(() -> Component.literal("§aAi adăugat premiul de §e" + amount + " Lei §aîn crate-ul §6" + crateName + " §acu șansa §b" + chance + "%"), false);
+            source.sendSuccess(() -> Component.literal("§aAdded the §e" + amount + " Lei §areward to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
         } else {
             source.sendFailure(Component.literal("§c[EvoHub] Crate-ul nu există!"));
         }
@@ -142,12 +142,12 @@ public class EvoCratesCommand {
     // COMANDA NOUA: ADAUGA CHEIE IN CRATE
     private static int addKeyReward(CommandSourceStack source, String crateName, int chance, String keyType, int amount) {
         ItemStack keyItem = new ItemStack(Items.TRIPWIRE_HOOK);
-        keyItem.setHoverName(Component.literal("§d§lCHEIE: §f" + amount + "x " + keyType.toUpperCase()));
+        keyItem.setHoverName(Component.literal("§d§lKEY: §f" + amount + "x " + keyType.toUpperCase()));
         keyItem.getOrCreateTag().putString("EvoKey", keyType.toLowerCase());
         keyItem.getOrCreateTag().putInt("EvoKeyAmount", amount);
 
         if (CrateManager.addRewardToFile(crateName, keyItem, chance)) {
-            source.sendSuccess(() -> Component.literal("§aAi adăugat premiul de §d" + amount + "x Chei " + keyType + " §aîn crate-ul §6" + crateName + " §acu șansa §b" + chance + "%"), false);
+            source.sendSuccess(() -> Component.literal("§aAdded the §d" + amount + "x " + keyType + " Keys §areward to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
         } else {
             source.sendFailure(Component.literal("§c[EvoHub] Crate-ul nu există!"));
         }

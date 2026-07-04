@@ -44,7 +44,7 @@ public class EvoCratesScreen extends Screen {
         int x = (sw - PANEL_W) / 2;
         int y = (sh - PANEL_H) / 2;
 
-        backButton = new CustomButton("< Înapoi la Hub", x + 15, y + 15, 105, 20, () -> {
+        backButton = new CustomButton("< Back to Hub", x + 15, y + 15, 105, 20, () -> {
             if (this.minecraft != null) this.minecraft.setScreen(parent);
         });
 
@@ -88,13 +88,13 @@ public class EvoCratesScreen extends Screen {
         int y = (sh - PANEL_H) / 2;
 
         EvoHubTheme.drawPanel(g, x, y, PANEL_W, PANEL_H);
-        EvoHubTheme.drawTitle(g, this.font, "CRATE-URI EVOCRAFT", "Click stânga deschide, click dreapta arată reward-urile", sw / 2, y + 14);
+        EvoHubTheme.drawTitle(g, this.font, "EVOCRAFT CRATES", "Left-click opens, right-click previews rewards", sw / 2, y + 14);
 
         if (backButton != null) backButton.render(g, smx, smy, this.font);
 
         if (buttons.isEmpty()) {
-            g.drawCenteredString(this.font, "§cNiciun crate nu a fost creat încă.", sw / 2, y + 150, 0xFFFFFF);
-            g.drawCenteredString(this.font, "§7Administratorul trebuie să configureze crate-urile.", sw / 2, y + 170, EvoHubTheme.TEXT_MUTED);
+            g.drawCenteredString(this.font, "§cNo crates have been created yet.", sw / 2, y + 150, 0xFFFFFF);
+            g.drawCenteredString(this.font, "§7An administrator must configure crates.", sw / 2, y + 170, EvoHubTheme.TEXT_MUTED);
         } else {
             for (CrateButton b : buttons) {
                 b.render(g, smx, smy, this.font);
@@ -158,9 +158,9 @@ public class EvoCratesScreen extends Screen {
             int badgeX = x + (w - badgeW) / 2;
             EvoHubTheme.fillRounded(g, badgeX, y + 72, badgeW, 15, keys > 0 ? 0xAA243D1C : 0xAA2A2A2A);
             EvoHubTheme.outlineRounded(g, badgeX, y + 72, badgeW, 15, keys > 0 ? EvoHubTheme.ACCENT : 0xFF555555);
-            g.drawCenteredString(font, "Chei: §a" + keys, x + w / 2, y + 76, 0xFFFFFF);
+            g.drawCenteredString(font, "Keys: §a" + keys, x + w / 2, y + 76, 0xFFFFFF);
 
-            EvoHubTheme.drawButton(g, font, "DESCHIDE", x + 18, y + 91, w - 36, 18, hover);
+            EvoHubTheme.drawButton(g, font, "OPEN", x + 18, y + 91, w - 36, 18, hover);
         }
 
         public boolean contains(int mx, int my) {

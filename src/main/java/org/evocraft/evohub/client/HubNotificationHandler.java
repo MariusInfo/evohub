@@ -91,7 +91,7 @@ public class HubNotificationHandler {
             int alphaHex = (int)(easeProgress * 255) << 24;
 
             int themeColor = 0xFFFFAA00;
-            String subtitleText = n.type == NotifType.TPA ? "§eDorește să se teleporteze la tine!" : "§eDorește să te teleportezi la el!";
+            String subtitleText = n.type == NotifType.TPA ? "§eWants to teleport to you!" : "§eWants you to teleport to them!";
 
             g.fillGradient(x, y, x + boxWidth, y + boxHeight, 0xAA000000 | (alphaHex & 0xFF000000), 0xEE000000 | (alphaHex & 0xFF000000));
             g.fill(x, y, x + 3, y + boxHeight, themeColor | (alphaHex & 0xFF000000));

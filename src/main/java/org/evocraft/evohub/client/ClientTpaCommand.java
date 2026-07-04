@@ -13,11 +13,11 @@ public class ClientTpaCommand {
 
     @SubscribeEvent
     public static void onClientCommandRegister(RegisterClientCommandsEvent event) {
-        // Înregistrăm o comandă strict pe client
+        // Registers a client-only command.
         event.getDispatcher().register(
                 Commands.literal("tpa")
                         .executes(context -> {
-                            // Când jucătorul scrie DOAR /tpa, deschidem meniul EvoHub la tab-ul 5 (Teleportare)
+                            // Opens the EvoHub teleport tab when the player runs plain /tpa.
                             Minecraft.getInstance().tell(() -> {
                                 Minecraft.getInstance().setScreen(new EvoHubScreen(5));
                             });

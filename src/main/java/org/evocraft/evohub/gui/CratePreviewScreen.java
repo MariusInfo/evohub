@@ -36,7 +36,7 @@ public class CratePreviewScreen extends Screen {
         int displayPage = maxPages == 0 ? 1 : currentPage + 1;
         int displayMax = maxPages == 0 ? 1 : maxPages;
 
-        EvoHubTheme.drawTitle(g, this.font, "CONȚINUT: " + crateName.toUpperCase(), "Pagina " + displayPage + "/" + displayMax, this.width / 2, y + 12);
+        EvoHubTheme.drawTitle(g, this.font, "CONTENTS: " + crateName.toUpperCase(), "Page " + displayPage + "/" + displayMax, this.width / 2, y + 12);
 
         int startX = x + 50;
         int startY = y + 52;
@@ -70,16 +70,16 @@ public class CratePreviewScreen extends Screen {
         if (currentPage > 0) {
             int prevX = x + 25;
             int prevY = y + PANEL_H - 38;
-            EvoHubTheme.drawButton(g, this.font, "< Pagina anterioară", prevX, prevY, 135, 20, isHover(mouseX, mouseY, prevX, prevY, 135, 20));
+            EvoHubTheme.drawButton(g, this.font, "< Previous Page", prevX, prevY, 135, 20, isHover(mouseX, mouseY, prevX, prevY, 135, 20));
         }
 
         if ((currentPage + 1) * ITEMS_PER_PAGE < items.size()) {
             int nextX = x + PANEL_W - 160;
             int nextY = y + PANEL_H - 38;
-            EvoHubTheme.drawButton(g, this.font, "Pagina următoare >", nextX, nextY, 135, 20, isHover(mouseX, mouseY, nextX, nextY, 135, 20));
+            EvoHubTheme.drawButton(g, this.font, "Next Page >", nextX, nextY, 135, 20, isHover(mouseX, mouseY, nextX, nextY, 135, 20));
         }
 
-        g.drawCenteredString(this.font, "§7Apasă ESC pentru a te întoarce", this.width / 2, y + PANEL_H - 15, EvoHubTheme.TEXT_MUTED);
+        g.drawCenteredString(this.font, "§7Press ESC to go back", this.width / 2, y + PANEL_H - 15, EvoHubTheme.TEXT_MUTED);
         super.render(g, mouseX, mouseY, partialTick);
     }
 

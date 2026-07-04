@@ -23,7 +23,7 @@ public class ProfileScreen extends Screen {
     private final boolean isSelf;
 
     public ProfileScreen(String playerName, String rank, double balance, int playtime, int kills, int deaths, List<JobInfo> jobs) {
-        super(Component.literal("Profil: " + playerName));
+        super(Component.literal("Profile: " + playerName));
         this.playerName = playerName;
         this.rank = rank;
         this.balance = balance;
@@ -41,7 +41,7 @@ public class ProfileScreen extends Screen {
         int w = 420; int h = 250;
         int x = (this.width - w) / 2; int y = (this.height - h) / 2;
 
-        this.addRenderableWidget(Button.builder(Component.literal("Vezi Toate Joburile"), b -> {
+        this.addRenderableWidget(Button.builder(Component.literal("View All Jobs"), b -> {
             if (this.minecraft != null) {
                 this.minecraft.setScreen(new AllJobsScreen(this, this.playerName, this.allJobs));
             }
@@ -71,7 +71,7 @@ public class ProfileScreen extends Screen {
         outlineRounded(g, x, y, w, h, 0xFF83B755);
         fillRounded(g, x, y, w, 25, 0xAA141C14);
 
-        g.drawCenteredString(this.font, "§lFIȘĂ PROFIL: §a" + this.playerName.toUpperCase(), this.width / 2, y + 8, 0xFFFFFF);
+        g.drawCenteredString(this.font, "§lPROFILE CARD: §a" + this.playerName.toUpperCase(), this.width / 2, y + 8, 0xFFFFFF);
 
         int leftX = x + 15;
         fillRounded(g, leftX, y + 40, 110, 160, 0xAA141C14);
@@ -80,36 +80,36 @@ public class ProfileScreen extends Screen {
         if (this.isSelf && this.minecraft != null && this.minecraft.player != null) {
             InventoryScreen.renderEntityInInventoryFollowsMouse(g, leftX + 55, y + 185, 65, (float)(leftX + 55 - mouseX), (float)(y + 130 - mouseY), this.minecraft.player);
         } else {
-            g.drawCenteredString(this.font, "§7[Avatar Indisponibil]", leftX + 55, y + 110, 0xFFFFFF);
+            g.drawCenteredString(this.font, "§7[Avatar Unavailable]", leftX + 55, y + 110, 0xFFFFFF);
         }
 
-        String statut = "§7Nou-Venit";
-        if (playtime > 10) statut = "§aCălător";
-        if (playtime > 50) statut = "§eAventurier";
+        String statut = "§7Newcomer";
+        if (playtime > 10) statut = "§aTraveler";
+        if (playtime > 50) statut = "§eAdventurer";
         if (playtime > 200) statut = "§cVeteran";
-        if (playtime > 500) statut = "§6§lLEGENDĂ";
+        if (playtime > 500) statut = "§6§lLEGEND";
 
         g.drawCenteredString(this.font, statut, leftX + 55, y + 210, 0xFFFFFF);
 
         int midX = x + 140; int midY = y + 40;
-        g.drawString(this.font, "§a§lInformații Generale", midX, midY, 0xFFFFFF, true); midY += 20;
+        g.drawString(this.font, "§a§lGeneral Info", midX, midY, 0xFFFFFF, true); midY += 20;
         g.drawString(this.font, "§7Rank: §f" + this.rank, midX, midY, 0xFFFFFF, true); midY += 15;
-        g.drawString(this.font, "§7Avere: §e" + String.format("%.0f", balance) + " Lei", midX, midY, 0xFFFFFF, true); midY += 15;
-        g.drawString(this.font, "§7Timp Jucat: §b" + playtime + " Ore", midX, midY, 0xFFFFFF, true); midY += 25;
+        g.drawString(this.font, "§7Balance: §e" + String.format("%.0f", balance) + " Lei", midX, midY, 0xFFFFFF, true); midY += 15;
+        g.drawString(this.font, "§7Playtime: §b" + playtime + " Hours", midX, midY, 0xFFFFFF, true); midY += 25;
 
-        g.drawString(this.font, "§c§lStatistici Luptă", midX, midY, 0xFFFFFF, true); midY += 20;
+        g.drawString(this.font, "§c§lCombat Stats", midX, midY, 0xFFFFFF, true); midY += 20;
         g.drawString(this.font, "§7Kills: §f" + kills, midX, midY, 0xFFFFFF, true); midY += 15;
-        g.drawString(this.font, "§7Decese: §f" + deaths, midX, midY, 0xFFFFFF, true); midY += 15;
+        g.drawString(this.font, "§7Deaths: §f" + deaths, midX, midY, 0xFFFFFF, true); midY += 15;
 
         double kd = deaths == 0 ? kills : (double) kills / deaths;
         String kdColor = kd >= 2.0 ? "§a" : (kd >= 1.0 ? "§e" : "§c");
         g.drawString(this.font, "§7K/D Ratio: " + kdColor + String.format("%.2f", kd), midX, midY, 0xFFFFFF, true);
 
         int rightX = x + 280; int rightY = y + 40;
-        g.drawString(this.font, "§a§lTop 3 Cariere", rightX, rightY, 0xFFFFFF, true); rightY += 20;
+        g.drawString(this.font, "§a§lTop 3 Careers", rightX, rightY, 0xFFFFFF, true); rightY += 20;
 
         if (allJobs.isEmpty()) {
-            g.drawString(this.font, "§cȘomer.", rightX, rightY, 0xFFFFFF, true);
+            g.drawString(this.font, "§cUnemployed.", rightX, rightY, 0xFFFFFF, true);
         } else {
             int displayCount = Math.min(3, allJobs.size());
             for (int i = 0; i < displayCount; i++) {

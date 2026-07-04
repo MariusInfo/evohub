@@ -24,7 +24,7 @@ public class HomeScreen extends Screen {
     private final List<CustomButton> buttons = new ArrayList<>();
 
     public HomeScreen(List<String> homes) {
-        super(Component.literal("Casele Tale"));
+        super(Component.literal("Your Homes"));
         this.homeNames = homes;
     }
 
@@ -44,14 +44,14 @@ public class HomeScreen extends Screen {
                 org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.C2S_HomeActionPacket("tp", home));
 
                 if (this.minecraft != null && this.minecraft.player != null) {
-                    this.minecraft.player.sendSystemMessage(Component.literal("§aTe teleportezi la casa: §e" + home));
+                    this.minecraft.player.sendSystemMessage(Component.literal("§aTeleporting to home: §e" + home));
                 }
                 this.onClose();
             }));
             buttonY += 25;
         }
 
-        buttons.add(new CustomButton("Închide Meniul", x + 70, y + imageHeight - 30, 100, 20, this::onClose));
+        buttons.add(new CustomButton("Close Menu", x + 70, y + imageHeight - 30, 100, 20, this::onClose));
     }
 
     private void fillRounded(GuiGraphics g, int x, int y, int w, int h, int color) {
@@ -79,7 +79,7 @@ public class HomeScreen extends Screen {
         g.pose().pushPose();
         g.pose().translate(x + imageWidth / 2.0f, y + 15, 0);
         g.pose().scale(1.3f, 1.3f, 1.3f);
-        g.drawCenteredString(this.font, "§lCASELE TALE", 0, 0, BORDER_COLOR);
+        g.drawCenteredString(this.font, "§lYOUR HOMES", 0, 0, BORDER_COLOR);
         g.pose().popPose();
 
         for (CustomButton b : buttons) b.render(g, mouseX, mouseY, this.font);

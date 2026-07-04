@@ -33,7 +33,7 @@ public class CrateAnimationScreen extends Screen {
     private int lastTickIndex = -1;
 
     public CrateAnimationScreen(String crateName, List<ItemStack> items, int winningIndex) {
-        super(Component.literal("Deschidere Crate: " + crateName));
+        super(Component.literal("Opening Crate: " + crateName));
         this.crateName = crateName;
         this.items = items;
         this.winningIndex = winningIndex;
@@ -56,7 +56,7 @@ public class CrateAnimationScreen extends Screen {
     public void render(GuiGraphics g, int mouseX, int mouseY, float partialTicks) {
         this.renderBackground(g);
         if (items.isEmpty()) {
-            g.drawCenteredString(this.font, "§cCrate-ul nu are iteme pentru animație.", this.width / 2, this.height / 2, 0xFFFFFF);
+            g.drawCenteredString(this.font, "§cThis crate has no items to animate.", this.width / 2, this.height / 2, 0xFFFFFF);
             super.render(g, mouseX, mouseY, partialTicks);
             return;
         }
@@ -80,9 +80,9 @@ public class CrateAnimationScreen extends Screen {
 
         drawAmbientGlow(g, centerX, centerY, elapsed, isFinished);
         EvoHubTheme.drawPanel(g, panelX, panelY, PANEL_W, PANEL_H);
-        EvoHubTheme.drawTitle(g, this.font, "DESCHIDERE CRATE", crateName.toUpperCase(), centerX, panelY + 14);
+        EvoHubTheme.drawTitle(g, this.font, "OPENING CRATE", crateName.toUpperCase(), centerX, panelY + 14);
 
-        String status = isFinished ? "§a§lRECOMPENSA TA" : "§7Se alege recompensa...";
+        String status = isFinished ? "§a§lYOUR REWARD" : "§7Choosing your reward...";
         g.drawCenteredString(this.font, status, centerX, panelY + 48, 0xFFFFFF);
 
         drawRoulette(g, rouletteX, rouletteY, currentScroll);
@@ -156,7 +156,7 @@ public class CrateAnimationScreen extends Screen {
         g.renderItem(wonItem, 0, 0);
         g.pose().popPose();
 
-        g.drawString(this.font, "§a§lAi câștigat", cardX + 70, y + 12, 0xFFFFFF, false);
+        g.drawString(this.font, "§a§lYou won", cardX + 70, y + 12, 0xFFFFFF, false);
         g.drawString(this.font, "§f" + wonItem.getHoverName().getString(), cardX + 70, y + 28, 0xFFFFFF, false);
     }
 

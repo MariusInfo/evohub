@@ -58,7 +58,7 @@ public class ClientPacketHandlers {
         for (int i = 0; i < names.size(); i++) {
             ItemStack[] itemArr = items.get(i).toArray(new ItemStack[0]);
             clientKits.add(new org.evocraft.evohub.gui.EvoKitScreen.KitInfo(
-                    names.get(i), "Pachet " + names.get(i), perms.get(i), cds.get(i) + " Ore", colors.get(i), itemArr
+                    names.get(i), "Kit " + names.get(i), perms.get(i), cds.get(i) + " Hours", colors.get(i), itemArr
             ));
         }
         org.evocraft.evohub.gui.EvoKitScreen.loadedKits = clientKits;

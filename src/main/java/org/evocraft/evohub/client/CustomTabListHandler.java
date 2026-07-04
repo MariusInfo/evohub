@@ -74,7 +74,7 @@ public class CustomTabListHandler {
         if (distanceSqr > 4096.0D) return;
 
         PlayerInfo info = mc.getConnection().getPlayerInfo(player.getUUID());
-        String coloredRank = "§7Membru";
+        String coloredRank = "§7Member";
 
         if (syncedRanks.containsKey(player.getUUID())) {
             coloredRank = applyRankColor(syncedRanks.get(player.getUUID()));
@@ -234,12 +234,12 @@ public class CustomTabListHandler {
 
         // FOOTER
         if (totalPages > 1) {
-            String footerText = "Pagina: " + (currentPage + 1) + " / " + totalPages + " (Auto-schimbare 5s)";
+            String footerText = "Page: " + (currentPage + 1) + " / " + totalPages + " (Auto-change 5s)";
             int pulseAlpha = (int) (155 + 100 * Math.sin(time / 300.0));
             int footerColor = (pulseAlpha << 24) | 0x83B755;
             g.drawCenteredString(mc.font, footerText, unscaledSw / 2, startY + totalHeight + 12, footerColor);
         } else {
-            g.drawCenteredString(mc.font, "§7Jucători Online: §a" + totalPlayers, unscaledSw / 2, startY + totalHeight + 12, 0xFFFFFF);
+            g.drawCenteredString(mc.font, "§7Online Players: §a" + totalPlayers, unscaledSw / 2, startY + totalHeight + 12, 0xFFFFFF);
         }
 
         g.pose().popPose();
@@ -253,7 +253,7 @@ public class CustomTabListHandler {
     }
 
     public static String applyRankColor(String prefix) {
-        if (prefix == null || prefix.trim().isEmpty()) return "§7Membru";
+        if (prefix == null || prefix.trim().isEmpty()) return "§7Member";
         prefix = prefix.replace('&', '§');
 
         if (prefix.contains("§")) return prefix;
@@ -279,7 +279,7 @@ public class CustomTabListHandler {
 
     private static String getColoredPrefix(PlayerInfo info) {
         Minecraft mc = Minecraft.getInstance();
-        if (info.getProfile() == null || info.getProfile().getName() == null) return "§7Membru";
+        if (info.getProfile() == null || info.getProfile().getName() == null) return "§7Member";
 
         String rawName = info.getProfile().getName();
         UUID uuid = info.getProfile().getId();
@@ -318,7 +318,7 @@ public class CustomTabListHandler {
         }
 
         if (foundPrefix.isEmpty()) {
-            foundPrefix = "Membru";
+            foundPrefix = "Member";
         }
 
         return applyRankColor(foundPrefix);
@@ -326,7 +326,7 @@ public class CustomTabListHandler {
 
     private static String getCleanRank(PlayerInfo info) {
         String raw = getColoredPrefix(info).replaceAll("(?i)§[0-9a-fk-or]", "").replaceAll("\\[|\\]", "").trim();
-        if (raw.isEmpty()) return "membru";
+        if (raw.isEmpty()) return "member";
         return raw;
     }
 

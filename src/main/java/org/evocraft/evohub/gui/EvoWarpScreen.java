@@ -57,10 +57,10 @@ public class EvoWarpScreen extends Screen {
         int y = (sh - PANEL_H) / 2;
 
         EvoHubTheme.drawPanel(g, x, y, PANEL_W, PANEL_H);
-        EvoHubTheme.drawTitle(g, this.font, "WARP-URI EVOCRAFT", isLoading ? "Se descarcă locațiile de pe server..." : "Alege o destinație", sw / 2, y + 14);
+        EvoHubTheme.drawTitle(g, this.font, "EVOCRAFT WARPS", isLoading ? "Downloading locations from the server..." : "Choose a destination", sw / 2, y + 14);
 
         if (isLoading) {
-            g.drawCenteredString(this.font, "§eSe încarcă...", sw / 2, y + PANEL_H / 2, 0xFFFFFF);
+            g.drawCenteredString(this.font, "§eLoading...", sw / 2, y + PANEL_H / 2, 0xFFFFFF);
         } else {
             renderWarpList(g, smx, smy, x, y, sw);
         }
@@ -71,14 +71,14 @@ public class EvoWarpScreen extends Screen {
     private void renderWarpList(GuiGraphics g, int smx, int smy, int x, int y, int sw) {
         int backX = x + 18;
         int backY = y + PANEL_H - 30;
-        EvoHubTheme.drawButton(g, this.font, "< Înapoi Hub", backX, backY, 95, 20, isHover(smx, smy, backX, backY, 95, 20));
+        EvoHubTheme.drawButton(g, this.font, "< Back to Hub", backX, backY, 95, 20, isHover(smx, smy, backX, backY, 95, 20));
 
         int totalWarps = loadedWarps.size();
         int totalPages = (int) Math.ceil((double) totalWarps / WARPS_PER_PAGE);
         if (currentPage >= totalPages && totalPages > 0) currentPage = totalPages - 1;
 
         if (totalPages > 1) {
-            g.drawCenteredString(this.font, "Pagina " + (currentPage + 1) + " din " + totalPages, sw / 2, y + PANEL_H - 22, EvoHubTheme.TEXT_MUTED);
+            g.drawCenteredString(this.font, "Page " + (currentPage + 1) + " of " + totalPages, sw / 2, y + PANEL_H - 22, EvoHubTheme.TEXT_MUTED);
             int px = sw / 2 - 72;
             int nx = sw / 2 + 52;
             int py = y + PANEL_H - 30;
@@ -87,7 +87,7 @@ public class EvoWarpScreen extends Screen {
         }
 
         if (loadedWarps.isEmpty()) {
-            g.drawCenteredString(this.font, "§cNu există warp-uri configurate.", sw / 2, y + 165, 0xFFFFFF);
+            g.drawCenteredString(this.font, "§cNo warps are configured.", sw / 2, y + 165, 0xFFFFFF);
             return;
         }
 
