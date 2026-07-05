@@ -68,7 +68,7 @@ dependencies {
 
     // 2. ADĂUGĂM AMBELE DEPENDENȚE (CORE + JOBS)
     // (Asigură-te că numele fișierelor din folderul 'libs' se potrivesc cu astea)
-    implementation fg.deobf("blank:evocore:1.0.4")
+    implementation fg.deobf("blank:evocore:1.0.5")
     implementation fg.deobf("blank:evojobs:1.0.3")
 }
 
