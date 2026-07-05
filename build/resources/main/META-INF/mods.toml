@@ -4,7 +4,7 @@ license = "All Rights Reserved"
 
 [[mods]]
 modId = "evohub"
-version = "1.0.12"
+version = "1.0.13"
 displayName = "EvoHub"
 authors = ""
 description = ''''''
