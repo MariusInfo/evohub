@@ -14,6 +14,7 @@ import net.minecraftforge.network.simple.SimpleChannel;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.evocraft.evocore.database.DatabaseManager;
+import org.evocraft.evocore.util.EvoCurrencyFormatter;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -367,7 +368,7 @@ public class EvoHubPacketHandler {
                     }
 
                     if (!hasKey) {
-                        player.sendSystemMessage(Component.literal("§cNu ai chei!"));
+                        player.sendSystemMessage(Component.literal("§cYou do not have any keys!"));
                         return;
                     }
 
@@ -389,7 +390,7 @@ public class EvoHubPacketHandler {
                                     if (wonItem.hasTag() && wonItem.getTag().contains("EvoMoney")) {
                                         int amount = wonItem.getTag().getInt("EvoMoney");
                                         player.getServer().getCommands().performPrefixedCommand(player.getServer().createCommandSourceStack(), "eco give " + username + " " + amount);
-                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fYou received: §a" + amount + " Lei§f!"));
+                                        player.sendSystemMessage(Component.literal("§8[§a🎁§8] §fYou received: §a" + EvoCurrencyFormatter.formatWithCurrency(amount) + "§f!"));
                                     } else if (wonItem.hasTag() && wonItem.getTag().contains("EvoKey")) {
                                         String kType = wonItem.getTag().getString("EvoKey");
                                         int kAmt = wonItem.getTag().getInt("EvoKeyAmount");
@@ -663,7 +664,7 @@ public class EvoHubPacketHandler {
                 } catch(Exception e) {}
 
                 if (!hasPerm) {
-                    player.sendSystemMessage(Component.literal("§c✖ Nu ai rank-ul necesar!")); return;
+                    player.sendSystemMessage(Component.literal("§cYou do not have the required rank!")); return;
                 }
 
                 long cooldownMs = kit.cooldownHours * 3600000L;

@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.evocraft.evocore.client.ClientBalanceData;
 import org.evocraft.evocore.client.ClientStatsData;
+import org.evocraft.evocore.util.EvoCurrencyFormatter;
 import org.evocraft.evohub.client.ClientCratesData;
 import org.evocraft.evohub.client.EvoHubClientSettings;
 import org.evocraft.evohub.network.EvoHubPacketHandler;
@@ -608,7 +609,7 @@ public class EvoHubScreen extends Screen {
 
         g.drawString(this.font, "Name: §f" + name, infoX, y, 0xAAAAAA, false);
         g.drawString(this.font, "Rank: §f" + ClientStatsData.rank, infoX, y + 15, 0xAAAAAA, false);
-        g.drawString(this.font, "Money: §e" + String.format("%,.0f", ClientBalanceData.getBalance()) + " Lei", infoX, y + 30, 0xAAAAAA, false);
+        g.drawString(this.font, "Money: §e" + EvoCurrencyFormatter.formatWithCurrency(ClientBalanceData.getBalance()), infoX, y + 30, 0xAAAAAA, false);
 
         int totalSecs = ClientStatsData.playtimeSeconds;
         String timeStr = (totalSecs < 3600) ? (totalSecs / 60) + " min" : (totalSecs / 3600) + " HOURS";
@@ -710,7 +711,7 @@ public class EvoHubScreen extends Screen {
                     continue;
                 }
 
-                String valStr = currentTopCategory.equals("ore") ? String.format("%,.1f Hours", entry.value) : currentTopCategory.equals("bani") ? String.format("%,.0f Lei", entry.value) : currentTopCategory.startsWith("job_") ? "Level " + (int)entry.value : String.valueOf((int)entry.value);
+                String valStr = currentTopCategory.equals("ore") ? String.format("%,.1f Hours", entry.value) : currentTopCategory.equals("bani") ? EvoCurrencyFormatter.formatWithCurrency(entry.value) : currentTopCategory.startsWith("job_") ? "Level " + (int)entry.value : String.valueOf((int)entry.value);
                 String color = displayedIndex == 1 ? "§e§l" : (displayedIndex == 2 ? "§f§l" : (displayedIndex == 3 ? "§6§l" : "§7"));
                 g.drawString(this.font, color + displayedIndex + ". " + entry.name, x, listY, 0xFFFFFF, false);
                 int valWidth = this.font.width(valStr); g.drawString(this.font, "§a" + valStr, x + areaW - 25 - valWidth, listY, 0xFFFFFF, false);

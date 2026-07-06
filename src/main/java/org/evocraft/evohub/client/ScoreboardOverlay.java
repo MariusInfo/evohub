@@ -9,6 +9,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.evocraft.evocore.client.ClientBalanceData;
 import org.evocraft.evocore.client.ClientStatsData;
+import org.evocraft.evocore.util.EvoCurrencyFormatter;
 import org.evocraft.evohub.gui.EvoHubScreen;
 import org.evocraft.evohub.gui.ScoreboardLayoutScreen;
 import org.evocraft.evojobs.client.ClientJobsData;
@@ -316,7 +317,7 @@ public class ScoreboardOverlay {
             case NAME -> g.drawString(mc.font, "👤 " + mc.player.getGameProfile().getName(), 4, 7, 0xFFFFFF, true);
             case RANK -> g.drawString(mc.font, "⭐ " + getRankText(mc), 4, 7, 0xFFFFFF, true);
             case MONEY -> {
-                String balanceStr = String.format("%.0f Lei", ClientBalanceData.getBalance());
+                String balanceStr = EvoCurrencyFormatter.formatWithCurrency(ClientBalanceData.getBalance());
                 g.drawString(mc.font, "💵 §e" + balanceStr, 4, 7, 0xFFFFFF, true);
             }
             case PLAYTIME -> {

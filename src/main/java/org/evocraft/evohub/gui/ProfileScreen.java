@@ -6,6 +6,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import org.evocraft.evocore.util.EvoCurrencyFormatter;
 import org.evocraft.evojobs.client.ClientJobsData.JobInfo; // IMPORTUL REPARAT!
 
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class ProfileScreen extends Screen {
         int midX = x + 140; int midY = y + 40;
         g.drawString(this.font, "§a§lGeneral Info", midX, midY, 0xFFFFFF, true); midY += 20;
         g.drawString(this.font, "§7Rank: §f" + this.rank, midX, midY, 0xFFFFFF, true); midY += 15;
-        g.drawString(this.font, "§7Balance: §e" + String.format("%.0f", balance) + " Lei", midX, midY, 0xFFFFFF, true); midY += 15;
+        g.drawString(this.font, "§7Balance: §e" + EvoCurrencyFormatter.formatWithCurrency(balance), midX, midY, 0xFFFFFF, true); midY += 15;
         g.drawString(this.font, "§7Playtime: §b" + playtime + " Hours", midX, midY, 0xFFFFFF, true); midY += 25;
 
         g.drawString(this.font, "§c§lCombat Stats", midX, midY, 0xFFFFFF, true); midY += 20;

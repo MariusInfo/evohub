@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.evocraft.evocore.util.EvoCurrencyFormatter;
 import org.evocraft.evohub.crates.CrateManager;
 import org.evocraft.evocore.database.DatabaseManager;
 
@@ -95,7 +96,7 @@ public class EvoCratesCommand {
                     stmt.setInt(4, amount);
                     stmt.addBatch(); // Le adăugăm în "coș" ca să nu dăm crash la baza de date
 
-                    // Anunțăm jucătorul că a primit cadoul!
+                    // Notify the player about the received gift.
                     player.sendSystemMessage(Component.literal("§8[§a🎁§8] §aYou received §e" + amount + "x " + crateName + " Keys §afrom an Administrator!"));
                     count++;
                 }
@@ -111,8 +112,8 @@ public class EvoCratesCommand {
     }
 
     private static int createCrate(CommandSourceStack source, String crateName) {
-        if (CrateManager.createCrateFile(crateName)) source.sendSuccess(() -> Component.literal("§a[EvoHub] Crate-ul §e" + crateName + " §aa fost creat!"), false);
-        else source.sendFailure(Component.literal("§c[EvoHub] Crate-ul " + crateName + " există deja!"));
+        if (CrateManager.createCrateFile(crateName)) source.sendSuccess(() -> Component.literal("§a[EvoHub] Crate §e" + crateName + " §awas created!"), false);
+        else source.sendFailure(Component.literal("§c[EvoHub] Crate " + crateName + " already exists!"));
         return 1;
     }
 
@@ -122,19 +123,19 @@ public class EvoCratesCommand {
         if (itemInHand.isEmpty()) { source.sendFailure(Component.literal("§c[EvoHub] Ține un item în mână!")); return 0; }
 
         if (CrateManager.addRewardToFile(crateName, itemInHand, chance)) source.sendSuccess(() -> Component.literal("§aAdded the item to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
-        else source.sendFailure(Component.literal("§c[EvoHub] Crate-ul nu există!"));
+        else source.sendFailure(Component.literal("§c[EvoHub] That crate does not exist!"));
         return 1;
     }
 
     private static int addMoneyReward(CommandSourceStack source, String crateName, int chance, int amount) {
         ItemStack moneyItem = new ItemStack(Items.PAPER);
-        moneyItem.setHoverName(Component.literal("§e§lBANI: §a" + amount + " Lei"));
+        moneyItem.setHoverName(Component.literal("§e§lEVO: §a" + EvoCurrencyFormatter.formatWithCurrency(amount)));
         moneyItem.getOrCreateTag().putInt("EvoMoney", amount);
 
         if (CrateManager.addRewardToFile(crateName, moneyItem, chance)) {
-            source.sendSuccess(() -> Component.literal("§aAdded the §e" + amount + " Lei §areward to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
+            source.sendSuccess(() -> Component.literal("§aAdded the §e" + EvoCurrencyFormatter.formatWithCurrency(amount) + " §areward to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
         } else {
-            source.sendFailure(Component.literal("§c[EvoHub] Crate-ul nu există!"));
+            source.sendFailure(Component.literal("§c[EvoHub] That crate does not exist!"));
         }
         return 1;
     }
@@ -149,7 +150,7 @@ public class EvoCratesCommand {
         if (CrateManager.addRewardToFile(crateName, keyItem, chance)) {
             source.sendSuccess(() -> Component.literal("§aAdded the §d" + amount + "x " + keyType + " Keys §areward to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
         } else {
-            source.sendFailure(Component.literal("§c[EvoHub] Crate-ul nu există!"));
+            source.sendFailure(Component.literal("§c[EvoHub] That crate does not exist!"));
         }
         return 1;
     }
