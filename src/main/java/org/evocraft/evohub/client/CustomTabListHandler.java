@@ -71,6 +71,7 @@ public class CustomTabListHandler {
 
         event.setResult(Event.Result.DENY);
         if (ClientVanishData.vanishedPlayers.contains(player.getUUID())) return;
+        if (shouldHideNameTag(player, mc.player)) return;
 
         double distanceSqr = mc.getEntityRenderDispatcher().distanceToSqr(player);
         if (distanceSqr > 4096.0D) return;
@@ -125,6 +126,12 @@ public class CustomTabListHandler {
         font.drawInBatch(rankComp, rankX, 10f, isSneaking ? 0xFFFFAA : -1, false, matrix4f, buffer, net.minecraft.client.gui.Font.DisplayMode.NORMAL, 0, event.getPackedLight());
 
         poseStack.popPose();
+    }
+
+    private static boolean shouldHideNameTag(Player player, Player viewer) {
+        if (player.isCrouching() || player.isShiftKeyDown()) return true;
+        if (player.isInvisible()) return true;
+        return viewer != null && player.isInvisibleTo(viewer);
     }
 
     @SubscribeEvent

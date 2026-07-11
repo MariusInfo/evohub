@@ -3,7 +3,7 @@ Specification-Title: evohub
 Specification-Vendor: 
 Specification-Version: 1
 Implementation-Title: evohub
-Implementation-Version: 1.0.21
+Implementation-Version: 1.0.22
 Implementation-Vendor: 
-Implementation-Timestamp: 2026-07-11T14:52:44+0200
+Implementation-Timestamp: 2026-07-11T16:59:02+0200
 
