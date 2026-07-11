@@ -54,7 +54,7 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-// 1. ACTIVĂM FOLDERUL LIBS PENTRU HUB
+// 1. ACTIVÄ‚M FOLDERUL LIBS PENTRU HUB
 repositories {
     maven { url = "https://repo.maven.apache.org/maven2" }
     flatDir {
@@ -66,9 +66,9 @@ dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     compileOnly 'net.luckperms:api:5.4'
 
-    // 2. ADĂUGĂM AMBELE DEPENDENȚE (CORE + JOBS)
-    // (Asigură-te că numele fișierelor din folderul 'libs' se potrivesc cu astea)
-    implementation fg.deobf("blank:evocore:1.0.19")
+    // 2. ADÄ‚UGÄ‚M AMBELE DEPENDENÈšE (CORE + JOBS)
+    // (AsigurÄƒ-te cÄƒ numele fiÈ™ierelor din folderul 'libs' se potrivesc cu astea)
+    implementation fg.deobf("blank:evocore:1.0.36")
     implementation fg.deobf("blank:evojobs:1.0.5")
 }
 

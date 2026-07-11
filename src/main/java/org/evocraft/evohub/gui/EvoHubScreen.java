@@ -60,6 +60,7 @@ public class EvoHubScreen extends Screen {
     public static boolean sbShowMoney = true;
     public static boolean sbShowPlaytime = true;
     public static boolean sbShowCombat = true;
+    public static boolean sbShowParty = true;
     public static boolean sbShowJobs = false;
     public static boolean sbShowInfo = true;
     public static boolean sbShowVote = true;
@@ -385,7 +386,7 @@ public class EvoHubScreen extends Screen {
                 }
 
                 buttons.add(new CustomButton("<", contentX, y + h - 30, 25, 20, () -> { if (currentTopPage > 1) { currentTopPage--; isLoadingTop = true; EvoHubPacketHandler.INSTANCE.sendToServer(new EvoHubPacketHandler.C2S_RequestTop(currentTopCategory, currentTopPage)); this.init(); } }));
-                buttons.add(new CustomButton(">", contentX + 380, y + h - 30, 25, 20, () -> { if (currentTopList.size() == 7) { currentTopPage++; isLoadingTop = true; EvoHubPacketHandler.INSTANCE.sendToServer(new EvoHubPacketHandler.C2S_RequestTop(currentTopCategory, currentTopPage)); this.init(); } }));
+                buttons.add(new CustomButton(">", contentX + 380, y + h - 30, 25, 20, () -> { if (currentTopList.size() == EvoHubPacketHandler.TOP_ENTRIES_PER_PAGE) { currentTopPage++; isLoadingTop = true; EvoHubPacketHandler.INSTANCE.sendToServer(new EvoHubPacketHandler.C2S_RequestTop(currentTopCategory, currentTopPage)); this.init(); } }));
             }
         }
         else if (currentTab == 4) {
@@ -489,6 +490,7 @@ public class EvoHubScreen extends Screen {
 
                 int ex2 = contentX + 180; int ey2 = contentY + 15;
                 buttons.add(new CustomButton(sbShowCombat ? "§aYES" : "§cNO", ex2 + 80, ey2, 45, 20, () -> { sbShowCombat = !sbShowCombat; saveHudSettings(); this.init(); })); ey2 += 22;
+                buttons.add(new CustomButton(sbShowParty ? "§aYES" : "§cNO", ex2 + 80, ey2, 45, 20, () -> { sbShowParty = !sbShowParty; saveHudSettings(); this.init(); })); ey2 += 22;
                 buttons.add(new CustomButton(sbShowJobs ? "§aYES" : "§cNO", ex2 + 80, ey2, 45, 20, () -> { sbShowJobs = !sbShowJobs; saveHudSettings(); this.init(); })); ey2 += 22;
                 buttons.add(new CustomButton(sbShowInfo ? "§aYES" : "§cNO", ex2 + 80, ey2, 45, 20, () -> { sbShowInfo = !sbShowInfo; saveHudSettings(); this.init(); })); ey2 += 22;
                 buttons.add(new CustomButton(sbShowVote ? "§aYES" : "§cNO", ex2 + 80, ey2, 45, 20, () -> { sbShowVote = !sbShowVote; saveHudSettings(); this.init(); }));
@@ -573,6 +575,7 @@ public class EvoHubScreen extends Screen {
                 g.drawString(this.font, "Playtime", contentX, ey, 0xFFFFFF, false);
                 int ex2 = contentX + 180; int ey2 = contentY + 20;
                 g.drawString(this.font, "Kills/Deaths", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
+                g.drawString(this.font, "Party", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
                 g.drawString(this.font, "Jobs Section", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
                 g.drawString(this.font, "Server Info", ex2, ey2, 0xFFFFFF, false); ey2 += 22;
                 g.drawString(this.font, "Vote", ex2, ey2, 0xFFFFFF, false);
@@ -705,7 +708,8 @@ public class EvoHubScreen extends Screen {
         } else if (currentTopList.isEmpty()) {
             g.drawCenteredString(this.font, "§cNo results!", areaX + (areaW / 2), listY + 20, 0xFFFFFF);
         } else {
-            int displayedIndex = 1;
+            int displayedIndex = (Math.max(1, currentTopPage) - 1) * EvoHubPacketHandler.TOP_ENTRIES_PER_PAGE + 1;
+            int displayedCount = 0;
             for (TopEntry entry : currentTopList) {
                 if (entry.name.startsWith("§") || entry.name.contains("00000000") || entry.name.toLowerCase().contains("spawn")) {
                     continue;
@@ -717,8 +721,9 @@ public class EvoHubScreen extends Screen {
                 int valWidth = this.font.width(valStr); g.drawString(this.font, "§a" + valStr, x + areaW - 25 - valWidth, listY, 0xFFFFFF, false);
                 listY += 20;
                 displayedIndex++;
+                displayedCount++;
 
-                if (displayedIndex > 7) break;
+                if (displayedCount >= EvoHubPacketHandler.TOP_ENTRIES_PER_PAGE) break;
             }
         }
     }

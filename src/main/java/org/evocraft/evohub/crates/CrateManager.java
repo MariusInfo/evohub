@@ -43,7 +43,7 @@ public class CrateManager {
             GSON.toJson(crateObj, writer);
             return true;
         } catch (Exception e) {
-            LOGGER.error("[EvoCrates] Eroare la crearea fisierului JSON pentru " + crateName, e);
+            LOGGER.error("[EvoCrates] Error creating JSON file for " + crateName, e);
             return false;
         }
     }
@@ -74,7 +74,7 @@ public class CrateManager {
                 return true;
             }
         } catch (Exception e) {
-            LOGGER.error("[EvoCrates] Eroare la salvarea item-ului in " + crateName, e);
+            LOGGER.error("[EvoCrates] Error saving item in " + crateName, e);
             return false;
         }
     }
@@ -108,7 +108,7 @@ public class CrateManager {
                 items.add(ItemStack.of(nbt));
             }
         } catch (Exception e) {
-            LOGGER.error("Eroare la citire preview pt " + crateName, e);
+            LOGGER.error("Error reading preview for " + crateName, e);
         }
         return items;
     }
@@ -139,7 +139,7 @@ public class CrateManager {
                 }
             }
         } catch (Exception e) {
-            LOGGER.error("Eroare la extragere item " + crateName, e);
+            LOGGER.error("Error extracting item from " + crateName, e);
         }
         return ItemStack.EMPTY;
     }

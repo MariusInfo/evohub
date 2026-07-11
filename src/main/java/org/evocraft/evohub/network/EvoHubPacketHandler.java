@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 @Mod.EventBusSubscriber(modid = "evohub", bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EvoHubPacketHandler {
     private static final String PROTOCOL_VERSION = "1";
+    public static final int TOP_ENTRIES_PER_PAGE = 12;
     public static final SimpleChannel INSTANCE = NetworkRegistry.newSimpleChannel(
             new ResourceLocation("evohub", "main"),
             () -> PROTOCOL_VERSION,
@@ -674,7 +675,7 @@ public class EvoHubPacketHandler {
                 if (pCds.containsKey(kit.name.toLowerCase())) {
                     long passed = now - pCds.get(kit.name.toLowerCase());
                     if (passed < cooldownMs) {
-                        player.sendSystemMessage(Component.literal("§c⏳ Mai ai de așteptat!")); return;
+                        player.sendSystemMessage(Component.literal("§c⏳ You still need to wait!")); return;
                     }
                 }
 
@@ -717,8 +718,9 @@ public class EvoHubPacketHandler {
 
                 new Thread(() -> {
                     List<EntryDTO> topList = new ArrayList<>();
-                    int limit = 7;
-                    int offset = (page - 1) * 7;
+                    int safePage = Math.max(1, page);
+                    int limit = TOP_ENTRIES_PER_PAGE;
+                    int offset = (safePage - 1) * TOP_ENTRIES_PER_PAGE;
                     String query = "";
                     boolean isJob = category.startsWith("job_");
 
@@ -771,7 +773,7 @@ public class EvoHubPacketHandler {
                     }
 
                     String json = new com.google.gson.Gson().toJson(topList);
-                    INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new S2C_SendTopList(category, page, json));
+                    INSTANCE.send(PacketDistributor.PLAYER.with(() -> player), new S2C_SendTopList(category, safePage, json));
                 }).start();
             });
             ctx.get().setPacketHandled(true); return true;

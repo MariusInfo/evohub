@@ -36,6 +36,7 @@ public class EvoHubClientSettings {
         EvoHubScreen.sbShowMoney = settings.showMoney;
         EvoHubScreen.sbShowPlaytime = settings.showPlaytime;
         EvoHubScreen.sbShowCombat = settings.showCombat;
+        EvoHubScreen.sbShowParty = settings.showParty;
         EvoHubScreen.sbShowJobs = settings.showJobs;
         EvoHubScreen.sbShowInfo = settings.showInfo;
         EvoHubScreen.sbShowVote = settings.showVote;
@@ -60,6 +61,7 @@ public class EvoHubClientSettings {
         settings.showMoney = EvoHubScreen.sbShowMoney;
         settings.showPlaytime = EvoHubScreen.sbShowPlaytime;
         settings.showCombat = EvoHubScreen.sbShowCombat;
+        settings.showParty = EvoHubScreen.sbShowParty;
         settings.showJobs = EvoHubScreen.sbShowJobs;
         settings.showInfo = EvoHubScreen.sbShowInfo;
         settings.showVote = EvoHubScreen.sbShowVote;
@@ -120,6 +122,7 @@ public class EvoHubClientSettings {
         boolean showMoney = true;
         boolean showPlaytime = true;
         boolean showCombat = true;
+        boolean showParty = true;
         boolean showJobs = false;
         boolean showInfo = true;
         boolean showVote = true;

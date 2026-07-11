@@ -9,12 +9,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.evocraft.evocore.client.ClientBalanceData;
 import org.evocraft.evocore.client.ClientStatsData;
+import org.evocraft.evocore.client.ClientVanishData;
 import org.evocraft.evocore.util.EvoCurrencyFormatter;
 import org.evocraft.evohub.gui.EvoHubScreen;
 import org.evocraft.evohub.gui.ScoreboardLayoutScreen;
 import org.evocraft.evojobs.client.ClientJobsData;
 import org.evocraft.evojobs.client.ClientJobsData.JobInfo;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -29,6 +31,8 @@ public class ScoreboardOverlay {
     private static final int ACCENT_COLOR = 0xFF83B755;
 
     public static int onlinePlayers = 1;
+    private static boolean checkedDungeonPartyData = false;
+    private static Method dungeonPartyMembersMethod = null;
 
     public enum HudElement {
         HEADER("header", "Server"),
@@ -37,6 +41,7 @@ public class ScoreboardOverlay {
         MONEY("money", "Money"),
         PLAYTIME("playtime", "Playtime"),
         COMBAT("combat", "Combat"),
+        PARTY("party", "Party"),
         JOBS("jobs", "Jobs"),
         INFO("info", "Info"),
         VOTE("vote", "Vote");
@@ -102,7 +107,11 @@ public class ScoreboardOverlay {
 
     public static void updateOnlinePlayers(Minecraft mc) {
         if (mc != null && mc.getConnection() != null) {
-            onlinePlayers = mc.getConnection().getOnlinePlayers().size();
+            onlinePlayers = (int) mc.getConnection().getOnlinePlayers().stream()
+                    .filter(info -> info.getProfile() != null && info.getProfile().getId() != null)
+                    .filter(info -> info.getProfile().getId().version() != 2)
+                    .filter(info -> !ClientVanishData.vanishedPlayers.contains(info.getProfile().getId()))
+                    .count();
         }
     }
 
@@ -224,6 +233,11 @@ public class ScoreboardOverlay {
             y += getElementDrawHeight(HudElement.JOBS) + MODULE_GAP;
         }
 
+        if (isElementVisible(HudElement.PARTY)) {
+            putPlacement(placements, HudElement.PARTY, baseX, baseY, 0, y, baseScale);
+            y += getElementDrawHeight(HudElement.PARTY) + MODULE_GAP;
+        }
+
         if (isElementVisible(HudElement.INFO)) {
             putPlacement(placements, HudElement.INFO, baseX, baseY, 0, y, baseScale);
             y += MODULE_HEIGHT + MODULE_GAP;
@@ -247,6 +261,7 @@ public class ScoreboardOverlay {
             totalHeight += (int) Math.ceil(stats.size() / 2.0) * (MODULE_HEIGHT + MODULE_GAP);
         }
         if (isElementVisible(HudElement.JOBS)) totalHeight += getElementDrawHeight(HudElement.JOBS) + MODULE_GAP;
+        if (isElementVisible(HudElement.PARTY)) totalHeight += getElementDrawHeight(HudElement.PARTY) + MODULE_GAP;
         if (isElementVisible(HudElement.INFO)) totalHeight += MODULE_HEIGHT + MODULE_GAP;
         if (isElementVisible(HudElement.VOTE)) totalHeight += MODULE_HEIGHT;
         return totalHeight;
@@ -272,6 +287,7 @@ public class ScoreboardOverlay {
             case MONEY -> EvoHubScreen.sbShowMoney;
             case PLAYTIME -> EvoHubScreen.sbShowPlaytime;
             case COMBAT -> EvoHubScreen.sbShowCombat && !isCreative;
+            case PARTY -> EvoHubScreen.sbShowParty && !isCreative && !getDungeonPartyMembers().isEmpty();
             case JOBS -> EvoHubScreen.sbShowJobs && !isCreative && getActiveJobsCount() > 0;
             case INFO -> EvoHubScreen.sbShowInfo;
         };
@@ -291,6 +307,7 @@ public class ScoreboardOverlay {
 
     private static int getElementDrawHeight(HudElement element) {
         if (element == HudElement.JOBS) return 20 + (getActiveJobsCount() * 28);
+        if (element == HudElement.PARTY) return 20 + (getDungeonPartyMembers().size() * 12);
         return MODULE_HEIGHT;
     }
 
@@ -329,6 +346,7 @@ public class ScoreboardOverlay {
                 g.drawString(mc.font, "⚔ §a" + ClientStatsData.kills, 4, 2, 0xFFFFFF, true);
                 g.drawString(mc.font, "☠ §c" + ClientStatsData.deaths, 4, 12, 0xFFFFFF, true);
             }
+            case PARTY -> drawParty(g, mc, width);
             case JOBS -> drawJobs(g, mc, width);
             case INFO -> {
                 String infoText = "🌐 §fevocraft.ro";
@@ -348,6 +366,17 @@ public class ScoreboardOverlay {
         int onlineX = width - mc.font.width(onlineText) - 5;
         if (onlineX > 78) {
             g.drawString(mc.font, onlineText, onlineX, 7, 0xFFFFFF, true);
+        }
+    }
+
+    private static void drawParty(GuiGraphics g, Minecraft mc, int width) {
+        List<String> members = getDungeonPartyMembers();
+        g.drawString(mc.font, "Party", 5, 5, ACCENT_COLOR, true);
+        int y = 18;
+        for (String member : members) {
+            String name = trimToWidth(mc, member, Math.max(20, width - 16));
+            g.drawString(mc.font, name, 8, y, 0xFFFFFF, true);
+            y += 12;
         }
     }
 
@@ -375,6 +404,49 @@ public class ScoreboardOverlay {
 
             jobY += 28;
         }
+    }
+
+    private static String trimToWidth(Minecraft mc, String text, int maxWidth) {
+        if (mc.font.width(text) <= maxWidth) {
+            return text;
+        }
+
+        String value = text;
+        while (!value.isEmpty() && mc.font.width(value + "..") > maxWidth) {
+            value = value.substring(0, value.length() - 1);
+        }
+        return value + "..";
+    }
+
+    private static List<String> getDungeonPartyMembers() {
+        if (!checkedDungeonPartyData) {
+            checkedDungeonPartyData = true;
+            try {
+                Class<?> dataClass = Class.forName("org.evocraft.evodungeon.client.ClientPartyData");
+                dungeonPartyMembersMethod = dataClass.getMethod("members");
+            } catch (ReflectiveOperationException ignored) {
+                dungeonPartyMembersMethod = null;
+            }
+        }
+
+        if (dungeonPartyMembersMethod == null) {
+            return List.of();
+        }
+
+        try {
+            Object value = dungeonPartyMembersMethod.invoke(null);
+            if (value instanceof List<?> rawList) {
+                List<String> members = new ArrayList<>();
+                for (Object entry : rawList) {
+                    if (entry instanceof String name && !name.isBlank()) {
+                        members.add(name);
+                    }
+                }
+                return members;
+            }
+        } catch (ReflectiveOperationException ignored) {
+        }
+        return List.of();
     }
 
     private static String getRankText(Minecraft mc) {

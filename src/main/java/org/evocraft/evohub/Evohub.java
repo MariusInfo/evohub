@@ -29,7 +29,7 @@ public class Evohub {
 
     private void commonSetup(final FMLCommonSetupEvent event) {
         event.enqueueWork(() -> {
-            LOGGER.info("[EvoHub] Inițializăm centrul de comandă (UI & Packets)...");
+            LOGGER.info("[EvoHub] Initializing command center (UI & Packets)...");
 
             // AICI ÎNREGISTRĂM CANALUL DE REȚEA PENTRU MENIURI
             EvoHubPacketHandler.register();
@@ -39,7 +39,7 @@ public class Evohub {
                 org.evocraft.evocore.network.PacketHandler.register();
                 LOGGER.info("[EvoHub] Sincronizare pachete EvoCore -> SUCCES!");
             } catch (Exception e) {
-                LOGGER.error("[EvoHub] Eroare la sincronizarea pachetelor EvoCore!", e);
+                LOGGER.error("[EvoHub] Error syncing EvoCore packets!", e);
             }
         });
     }

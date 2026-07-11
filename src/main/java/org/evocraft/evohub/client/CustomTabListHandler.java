@@ -10,6 +10,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.event.RenderNameTagEvent;
+import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.Event;
@@ -69,6 +70,7 @@ public class CustomTabListHandler {
         if (mc.player == null || mc.getConnection() == null) return;
 
         event.setResult(Event.Result.DENY);
+        if (ClientVanishData.vanishedPlayers.contains(player.getUUID())) return;
 
         double distanceSqr = mc.getEntityRenderDispatcher().distanceToSqr(player);
         if (distanceSqr > 4096.0D) return;
@@ -123,6 +125,13 @@ public class CustomTabListHandler {
         font.drawInBatch(rankComp, rankX, 10f, isSneaking ? 0xFFFFAA : -1, false, matrix4f, buffer, net.minecraft.client.gui.Font.DisplayMode.NORMAL, 0, event.getPackedLight());
 
         poseStack.popPose();
+    }
+
+    @SubscribeEvent
+    public static void onRenderPlayer(RenderPlayerEvent.Pre event) {
+        if (ClientVanishData.vanishedPlayers.contains(event.getEntity().getUUID())) {
+            event.setCanceled(true);
+        }
     }
 
     @SubscribeEvent

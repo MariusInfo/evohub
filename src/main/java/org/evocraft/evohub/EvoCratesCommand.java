@@ -105,7 +105,7 @@ public class EvoCratesCommand {
                 final int finalCount = count;
                 source.sendSuccess(() -> Component.literal("§a[EvoHub] Successfully gave §e" + amount + "x " + crateName + " Keys §ato §b" + finalCount + " §aonline players!"), true);
             } catch (Exception e) {
-                source.sendFailure(Component.literal("§c[EvoHub] Eroare la baza de date!"));
+                source.sendFailure(Component.literal("§c[EvoHub] Database error!"));
             }
         }).start();
         return 1;
@@ -120,7 +120,7 @@ public class EvoCratesCommand {
     private static int addReward(CommandSourceStack source, String crateName, int chance) {
         if (!(source.getEntity() instanceof ServerPlayer player)) return 0;
         ItemStack itemInHand = player.getMainHandItem();
-        if (itemInHand.isEmpty()) { source.sendFailure(Component.literal("§c[EvoHub] Ține un item în mână!")); return 0; }
+        if (itemInHand.isEmpty()) { source.sendFailure(Component.literal("§c[EvoHub] Hold an item in your hand!")); return 0; }
 
         if (CrateManager.addRewardToFile(crateName, itemInHand, chance)) source.sendSuccess(() -> Component.literal("§aAdded the item to crate §6" + crateName + " §awith chance §b" + chance + "%"), false);
         else source.sendFailure(Component.literal("§c[EvoHub] That crate does not exist!"));
