@@ -61,6 +61,11 @@ public class JoinLeaveNotificationHandler {
 
     private static final List<Notification> activeNotifications = new ArrayList<>();
 
+    public static void reset() {
+        activeNotifications.clear();
+        skinCache.clear();
+    }
+
     public static void addNotification(String name, UUID uuid, boolean isJoin) {
         NotifType type = isJoin ? NotifType.JOIN : NotifType.LEAVE;
         if (isJoin) updateSkinCache(uuid);
@@ -98,10 +103,13 @@ public class JoinLeaveNotificationHandler {
     }
 
     private static UUID guessUuid(String name) {
+        if (name == null) return UUID.randomUUID();
         Minecraft mc = Minecraft.getInstance();
         if (mc.getConnection() != null) {
             for (PlayerInfo info : mc.getConnection().getOnlinePlayers()) {
-                if (info.getProfile().getName().equalsIgnoreCase(name)) {
+                if (info.getProfile() != null && info.getProfile().getName() != null
+                        && info.getProfile().getId() != null
+                        && info.getProfile().getName().equalsIgnoreCase(name)) {
                     return info.getProfile().getId();
                 }
             }
@@ -110,6 +118,7 @@ public class JoinLeaveNotificationHandler {
     }
 
     private static void updateSkinCache(UUID uuid) {
+        if (uuid == null) return;
         Minecraft mc = Minecraft.getInstance();
         if (mc.getConnection() != null) {
             PlayerInfo info = mc.getConnection().getPlayerInfo(uuid);
@@ -212,7 +221,9 @@ public class JoinLeaveNotificationHandler {
             Minecraft mc = Minecraft.getInstance();
             if (mc.getConnection() != null) {
                 for (PlayerInfo info : mc.getConnection().getOnlinePlayers()) {
-                    skinCache.put(info.getProfile().getId(), info.getSkinLocation());
+                    if (info.getProfile() != null && info.getProfile().getId() != null) {
+                        skinCache.put(info.getProfile().getId(), info.getSkinLocation());
+                    }
                 }
             }
 
@@ -231,6 +242,7 @@ public class JoinLeaveNotificationHandler {
         if (activeNotifications.isEmpty()) return;
 
         Minecraft mc = Minecraft.getInstance();
+        if (mc.font == null) return;
         GuiGraphics g = event.getGuiGraphics();
         int w = event.getWindow().getGuiScaledWidth();
 

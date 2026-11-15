@@ -75,7 +75,9 @@ public class EvoWarpScreen extends Screen {
 
         int totalWarps = loadedWarps.size();
         int totalPages = (int) Math.ceil((double) totalWarps / WARPS_PER_PAGE);
-        if (currentPage >= totalPages && totalPages > 0) currentPage = totalPages - 1;
+        if (currentPage < 0) currentPage = 0;
+        if (totalPages == 0) currentPage = 0;
+        else if (currentPage >= totalPages) currentPage = totalPages - 1;
 
         if (totalPages > 1) {
             g.drawCenteredString(this.font, "Page " + (currentPage + 1) + " of " + totalPages, sw / 2, y + PANEL_H - 22, EvoHubTheme.TEXT_MUTED);

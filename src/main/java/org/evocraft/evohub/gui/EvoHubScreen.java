@@ -199,7 +199,7 @@ public class EvoHubScreen extends Screen {
             case 1 -> new ItemStack(Items.BOOK);
             case 2 -> new ItemStack(Items.IRON_PICKAXE);
             case 3 -> new ItemStack(Items.EMERALD);
-            case 4 -> new ItemStack(isCreative() ? Items.QUARTZ_BLOCK : Items.GOLDEN_SHOVEL);
+            case 4 -> new ItemStack(Items.GOLDEN_SHOVEL);
             case 5 -> new ItemStack(Items.ENDER_PEARL);
             case 6 -> new ItemStack(Items.RED_BED);
             case 7 -> new ItemStack(Items.DIAMOND_CHESTPLATE);
@@ -263,10 +263,9 @@ public class EvoHubScreen extends Screen {
                 int by = startY + r * (boxH + gap);
 
                 String tName = tabNames[tabIndex];
-                if (tabIndex == 4) tName = isCreative() ? "Plots" : "Protections";
 
                 buttons.add(new IconButton(tName, bx, by, boxW, boxH, getIconForTab(tabIndex), () -> {
-                    if (tabIndex == 7) { if (this.minecraft != null) this.minecraft.setScreen(new EvoKitScreen(this)); return; }
+                    if (tabIndex == 7) { org.evocraft.evohub.client.ClientEvents.openKitsScreen(this.minecraft, this); return; }
                     if (tabIndex == 8) { if (this.minecraft != null) this.minecraft.setScreen(new EvoWarpScreen(this)); return; }
                     if (tabIndex == 10) { if (this.minecraft != null) this.minecraft.setScreen(new EvoCratesScreen(this)); return; }
 
@@ -303,11 +302,10 @@ public class EvoHubScreen extends Screen {
             final int tabIndex = i;
             String tName = tabNames[i];
 
-            if (tabIndex == 4) tName = isCreative() ? "Plots" : "Protections";
             boolean hideTab = isCreative() && (tabIndex == 2 || tabIndex == 7 || tabIndex == 8 || tabIndex == 10);
 
             SidebarButton tabBtn = new SidebarButton(tName, x + 5, btnY, menuWidth - 10, 24, this.currentTab == i, () -> {
-                if (tabIndex == 7) { if (this.minecraft != null) this.minecraft.setScreen(new EvoKitScreen(this)); return; }
+                if (tabIndex == 7) { org.evocraft.evohub.client.ClientEvents.openKitsScreen(this.minecraft, this); return; }
                 if (tabIndex == 8) { if (this.minecraft != null) this.minecraft.setScreen(new EvoWarpScreen(this)); return; }
                 if (tabIndex == 10) { if (this.minecraft != null) this.minecraft.setScreen(new EvoCratesScreen(this)); return; }
 
@@ -336,13 +334,13 @@ public class EvoHubScreen extends Screen {
 
         if (currentTab == 0) {
             buttons.add(new IconButton("Survival", contentX + 55, contentY + 60, 112, 92, new ItemStack(Items.GRASS_BLOCK), () -> {
-                if (this.minecraft.player != null) {
+                if (this.minecraft != null && this.minecraft.player != null) {
                     this.minecraft.player.connection.sendCommand("server survival");
                     this.minecraft.setScreen(null);
                 }
             }));
             buttons.add(new IconButton("Creative", contentX + 195, contentY + 60, 112, 92, new ItemStack(Items.BRICKS), () -> {
-                if (this.minecraft.player != null) {
+                if (this.minecraft != null && this.minecraft.player != null) {
                     this.minecraft.player.connection.sendCommand("server creative");
                     this.minecraft.setScreen(null);
                 }
@@ -379,7 +377,7 @@ public class EvoHubScreen extends Screen {
                 }
                 buttons.add(new CustomButton("Hours", nextX, contentY, 50, 20, () -> { currentTopCategory = "ore"; currentTopPage = 1; isLoadingTop = true; EvoHubPacketHandler.INSTANCE.sendToServer(new EvoHubPacketHandler.C2S_RequestTop(currentTopCategory, currentTopPage)); this.init(); }));
                 nextX += 50;
-                buttons.add(new CustomButton(isCreative() ? "Plots" : "Claims", nextX, contentY, 65, 20, () -> { currentTopCategory = "claimuri"; currentTopPage = 1; isLoadingTop = true; EvoHubPacketHandler.INSTANCE.sendToServer(new EvoHubPacketHandler.C2S_RequestTop(currentTopCategory, currentTopPage)); this.init(); }));
+                buttons.add(new CustomButton("Claims", nextX, contentY, 65, 20, () -> { currentTopCategory = "claimuri"; currentTopPage = 1; isLoadingTop = true; EvoHubPacketHandler.INSTANCE.sendToServer(new EvoHubPacketHandler.C2S_RequestTop(currentTopCategory, currentTopPage)); this.init(); }));
                 nextX += 70;
                 if (!isCreative()) {
                     buttons.add(new CustomButton("Jobs ⛏", nextX, contentY, 70, 20, () -> { isSelectingJobTop = true; this.init(); }));
@@ -390,7 +388,7 @@ public class EvoHubScreen extends Screen {
             }
         }
         else if (currentTab == 4) {
-            buttons.add(new CustomButton(isCreative() ? "§aOpen Plot Map" : "§aOpen Protection Map", contentX, contentY + 50, 180, 25, () -> {
+            buttons.add(new CustomButton("§aOpen Protection Map", contentX, contentY + 50, 180, 25, () -> {
                 if (this.minecraft != null && this.minecraft.player != null) {
                     this.minecraft.player.connection.sendCommand("claim");
                 }
@@ -406,12 +404,12 @@ public class EvoHubScreen extends Screen {
 
             if (selectedTpaPlayer != null) {
                 buttons.add(new CustomButton("§aTPA (You -> Them)", contentX + 20, contentY + 180, 125, 25, () -> {
-                    org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.C2S_TpaActionPacket("tpa", selectedTpaPlayer));
-                    this.minecraft.setScreen(null);
+                    org.evocraft.evoessentials.network.EssentialsPacketHandler.INSTANCE.sendToServer(new org.evocraft.evoessentials.network.C2S_TpaActionPacket("tpa", selectedTpaPlayer));
+                    if (this.minecraft != null) this.minecraft.setScreen(null);
                 }));
                 buttons.add(new CustomButton("§eTPA Here (Them -> You)", contentX + 155, contentY + 180, 145, 25, () -> {
-                    org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.C2S_TpaActionPacket("tpahere", selectedTpaPlayer));
-                    this.minecraft.setScreen(null);
+                    org.evocraft.evoessentials.network.EssentialsPacketHandler.INSTANCE.sendToServer(new org.evocraft.evoessentials.network.C2S_TpaActionPacket("tpahere", selectedTpaPlayer));
+                    if (this.minecraft != null) this.minecraft.setScreen(null);
                 }));
             }
 
@@ -430,21 +428,23 @@ public class EvoHubScreen extends Screen {
             }
         }
         else if (currentTab == 6) {
-            List<String> playerHomes = org.evocraft.evocore.client.ClientHomeData.playerHomes;
+            List<String> playerHomes = org.evocraft.evoessentials.client.ClientHomeData.playerHomes;
 
             homeNameInput = new EditBox(this.font, contentX, contentY + 50, 150, 20, Component.literal("Home Name"));
             this.addRenderableWidget(homeNameInput);
 
             buttons.add(new CustomButton("§aSet Home", contentX + 160, contentY + 50, 100, 20, () -> {
-                if(!homeNameInput.getValue().isEmpty()) {
-                    org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.C2S_HomeActionPacket("set", homeNameInput.getValue()));
+                String homeName = homeNameInput.getValue().trim();
+                if (!homeName.isEmpty()) {
+                    org.evocraft.evoessentials.network.EssentialsPacketHandler.INSTANCE.sendToServer(new org.evocraft.evoessentials.network.C2S_HomeActionPacket("set", homeName));
                     homeNameInput.setValue("");
                 }
             }));
 
             buttons.add(new CustomButton("§cDelete Home", contentX + 270, contentY + 50, 100, 20, () -> {
-                if(!homeNameInput.getValue().isEmpty()) {
-                    org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.C2S_HomeActionPacket("del", homeNameInput.getValue()));
+                String homeName = homeNameInput.getValue().trim();
+                if (!homeName.isEmpty()) {
+                    org.evocraft.evoessentials.network.EssentialsPacketHandler.INSTANCE.sendToServer(new org.evocraft.evoessentials.network.C2S_HomeActionPacket("del", homeName));
                     homeNameInput.setValue("");
                 }
             }));
@@ -454,9 +454,10 @@ public class EvoHubScreen extends Screen {
 
             if (playerHomes != null) {
                 for(String home : playerHomes) {
+                    if (home == null || home.isBlank()) continue;
                     String display = home.length() > 9 ? home.substring(0, 7) + ".." : home;
                     buttons.add(new CustomButton("🏠 " + display, hX, hY, 85, 22, () -> {
-                        org.evocraft.evocore.network.PacketHandler.INSTANCE.sendToServer(new org.evocraft.evocore.network.C2S_HomeActionPacket("tp", home));
+                        org.evocraft.evoessentials.network.EssentialsPacketHandler.INSTANCE.sendToServer(new org.evocraft.evoessentials.network.C2S_HomeActionPacket("tp", home));
                     }));
                     hX += 90;
                     if(hX > contentX + 350) {
@@ -538,8 +539,8 @@ public class EvoHubScreen extends Screen {
         else if (currentTab == 2 && !isCreative()) renderTabJoburi(g, contentX, contentY);
         else if (currentTab == 3) renderTabTopuri(g, contentX, contentY, x + menuWidth, y, w - menuWidth, h);
         else if (currentTab == 4) {
-            g.drawString(this.font, isCreative() ? "§a§lPlot Management" : "§a§lProtection Management", contentX, contentY, 0xFFFFFF, false);
-            g.drawString(this.font, isCreative() ? "§7View and manage your plots here" : "§7View and manage your protected chunks here", contentX, contentY + 20, 0xAAAAAA, false);
+            g.drawString(this.font, "§a§lProtection Management", contentX, contentY, 0xFFFFFF, false);
+            g.drawString(this.font, "§7View and manage your protected chunks here", contentX, contentY + 20, 0xAAAAAA, false);
         } else if (currentTab == 5) {
             g.drawString(this.font, "§d§lTeleport System (TPA)", contentX, contentY, 0xFFFFFF, false);
             if (onlinePlayers.isEmpty()) {
@@ -550,8 +551,8 @@ public class EvoHubScreen extends Screen {
             fillRounded(g, contentX, contentY + 42, 280, 135, 0xAA141C14);
             outlineRounded(g, contentX, contentY + 42, 280, 135, 0xFF3A592D);
         } else if (currentTab == 6) {
-            int cCount = org.evocraft.evocore.client.ClientHomeData.currentHomesCount;
-            int mCount = org.evocraft.evocore.client.ClientHomeData.maxHomesCount;
+            int cCount = org.evocraft.evoessentials.client.ClientHomeData.currentHomesCount;
+            int mCount = org.evocraft.evoessentials.client.ClientHomeData.maxHomesCount;
             g.drawString(this.font, "§e§lMy Homes §7(" + cCount + "/" + mCount + ")", contentX, contentY, 0xFFFFFF, false);
             g.drawString(this.font, "§7Type a name below to save a home.", contentX, contentY + 20, 0xAAAAAA, false);
             fillRounded(g, contentX, contentY + 100, 380, 160, 0xAA141C14);
@@ -608,7 +609,7 @@ public class EvoHubScreen extends Screen {
             InventoryScreen.renderEntityInInventoryFollowsMouse(g, x + 45, y + 125, 55, (float)(x + 45 - mouseX), (float)(y + 80 - mouseY), this.minecraft.player);
         }
         int infoX = x + 100;
-        String name = this.minecraft.player != null ? this.minecraft.player.getGameProfile().getName() : "Unknown";
+        String name = (this.minecraft != null && this.minecraft.player != null) ? this.minecraft.player.getGameProfile().getName() : "Unknown";
 
         g.drawString(this.font, "Name: §f" + name, infoX, y, 0xAAAAAA, false);
         g.drawString(this.font, "Rank: §f" + ClientStatsData.rank, infoX, y + 15, 0xAAAAAA, false);
@@ -634,8 +635,10 @@ public class EvoHubScreen extends Screen {
                 g.drawString(this.font, "§7You do not have any keys right now.", infoX, keyY, 0xAAAAAA, false);
             } else {
                 for (Map.Entry<String, Integer> entry : ClientCratesData.playerKeys.entrySet()) {
-                    String crateType = entry.getKey().substring(0, 1).toUpperCase() + entry.getKey().substring(1);
-                    int amount = entry.getValue();
+                    String rawKey = entry.getKey();
+                    if (rawKey == null || rawKey.isEmpty()) continue;
+                    String crateType = rawKey.substring(0, 1).toUpperCase() + rawKey.substring(1);
+                    int amount = entry.getValue() != null ? entry.getValue() : 0;
                     g.drawString(this.font, "§8• §f" + crateType + ": §a" + amount + " pcs.", infoX, keyY, 0xFFFFFF, false);
                     keyY += 12;
                 }
@@ -689,7 +692,8 @@ public class EvoHubScreen extends Screen {
             }
 
             int barY = drawY + 31; g.renderOutline(drawX - 1, barY - 1, 182, 6, 0xFF83B755);
-            float progress = (float) (jXp / jReq); progress = Math.min(1.0f, Math.max(0.0f, progress));
+            float progress = jReq > 0.0 ? (float) (jXp / jReq) : 0.0f;
+            progress = Math.min(1.0f, Math.max(0.0f, progress));
             g.fill(drawX, barY, drawX + (int)(180 * progress), barY + 4, 0xFF83B755);
 
             String xpTxt = (int)jXp + "/" + (int)jReq; g.pose().pushPose(); g.pose().translate(drawX + 180, barY + 6, 0); g.pose().scale(0.6f, 0.6f, 0.6f); g.drawString(this.font, xpTxt, -this.font.width(xpTxt), 0, 0xAAAAAA, false); g.pose().popPose();
@@ -698,7 +702,8 @@ public class EvoHubScreen extends Screen {
 
     private void renderTabTopuri(GuiGraphics g, int x, int y, int areaX, int areaY, int areaW, int areaH) {
         if (isSelectingJobTop) return;
-        String cleanCategory = currentTopCategory.replace("job_", ""); String title = "Top " + cleanCategory.substring(0, 1).toUpperCase() + cleanCategory.substring(1);
+        String cleanCategory = currentTopCategory != null ? currentTopCategory.replace("job_", "") : "bani";
+        String title = cleanCategory.isEmpty() ? "Top" : "Top " + cleanCategory.substring(0, 1).toUpperCase() + cleanCategory.substring(1);
         g.drawCenteredString(this.font, "§l" + title, areaX + (areaW / 2), y + 30, 0xFF83B755);
         g.drawCenteredString(this.font, "Page " + currentTopPage, areaX + (areaW / 2), areaY + areaH - 25, 0xAAAAAA);
         int listY = y + 55;
@@ -711,7 +716,7 @@ public class EvoHubScreen extends Screen {
             int displayedIndex = (Math.max(1, currentTopPage) - 1) * EvoHubPacketHandler.TOP_ENTRIES_PER_PAGE + 1;
             int displayedCount = 0;
             for (TopEntry entry : currentTopList) {
-                if (entry.name.startsWith("§") || entry.name.contains("00000000") || entry.name.toLowerCase().contains("spawn")) {
+                if (entry == null || entry.name == null || entry.name.isBlank() || entry.name.startsWith("§") || entry.name.contains("00000000") || entry.name.toLowerCase().contains("spawn")) {
                     continue;
                 }
 
@@ -785,8 +790,6 @@ public class EvoHubScreen extends Screen {
             case "My Career" -> "Jobs";
             case "Leaderboards" -> "Top lists";
             case "Protections" -> "Claims";
-            case "Ploturi" -> "Creative";
-            case "Plots" -> "Creative";
             case "Teleport" -> "TPA";
             case "My Homes" -> "Homes";
             case "Kits" -> "Packs";

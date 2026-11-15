@@ -32,7 +32,11 @@ public class CratePreviewScreen extends Screen {
 
         EvoHubTheme.drawPanel(g, x, y, PANEL_W, PANEL_H);
 
-        int maxPages = (int) Math.ceil((double) items.size() / ITEMS_PER_PAGE);
+        int itemCount = Math.min(items.size(), chances.size());
+        int maxPages = (int) Math.ceil((double) itemCount / ITEMS_PER_PAGE);
+        if (currentPage < 0) currentPage = 0;
+        if (maxPages == 0) currentPage = 0;
+        else if (currentPage >= maxPages) currentPage = maxPages - 1;
         int displayPage = maxPages == 0 ? 1 : currentPage + 1;
         int displayMax = maxPages == 0 ? 1 : maxPages;
 
@@ -41,7 +45,7 @@ public class CratePreviewScreen extends Screen {
         int startX = x + 50;
         int startY = y + 52;
         int startIndex = currentPage * ITEMS_PER_PAGE;
-        int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, items.size());
+        int endIndex = Math.min(startIndex + ITEMS_PER_PAGE, itemCount);
 
         for (int i = startIndex; i < endIndex; i++) {
             int indexOnPage = i - startIndex;
