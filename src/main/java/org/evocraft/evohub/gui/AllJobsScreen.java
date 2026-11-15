@@ -67,10 +67,11 @@ public class AllJobsScreen extends Screen {
         int listX = x + 15;
         int currentY = y + 25;
 
-        if (jobs.isEmpty()) {
+        if (jobs == null || jobs.isEmpty()) {
             g.drawCenteredString(this.font, "This player has no jobs.", x + w / 2, y + 150, 0xFFAAAAAA);
         } else {
             for (JobInfo job : jobs) {
+                if (currentY + 40 > y + h - 22) break;
                 fillRounded(g, listX, currentY, w - 30, 40, CARD_BG);
                 outlineRounded(g, listX, currentY, w - 30, 40, CARD_BORDER);
 
@@ -88,7 +89,8 @@ public class AllJobsScreen extends Screen {
                 g.drawString(this.font, xpTxt, listX + w - 35 - this.font.width(xpTxt), currentY + 8, TEXT_COLOR, false);
 
                 fillRounded(g, listX + 130, currentY + 22, 100, 8, 0xFF333333);
-                int progressWidth = (int) (100 * Math.min(1.0, job.currentXp / job.requiredXp));
+                double ratio = job.requiredXp > 0.0 ? (job.currentXp / job.requiredXp) : 0.0;
+                int progressWidth = (int) (100 * Math.max(0.0, Math.min(1.0, ratio)));
                 fillRounded(g, listX + 130, currentY + 22, progressWidth, 8, BORDER_COLOR);
 
                 currentY += 45;

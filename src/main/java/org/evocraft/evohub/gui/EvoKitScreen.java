@@ -86,7 +86,9 @@ public class EvoKitScreen extends Screen {
 
         int totalKits = loadedKits.size();
         int totalPages = (int) Math.ceil((double) totalKits / KITS_PER_PAGE);
-        if (currentPage >= totalPages && totalPages > 0) currentPage = totalPages - 1;
+        if (currentPage < 0) currentPage = 0;
+        if (totalPages == 0) currentPage = 0;
+        else if (currentPage >= totalPages) currentPage = totalPages - 1;
 
         if (totalPages > 1) {
             g.drawCenteredString(this.font, "Page " + (currentPage + 1) + " of " + totalPages, sw / 2, y + PANEL_H - 22, EvoHubTheme.TEXT_MUTED);
@@ -136,7 +138,7 @@ public class EvoKitScreen extends Screen {
         g.drawCenteredString(this.font, "§7" + EvoHubTheme.shorten(kit.desc, 22), 0, 0, EvoHubTheme.TEXT_MUTED);
         g.pose().popPose();
 
-        if (kit.items.length > 0) {
+        if (kit.items != null && kit.items.length > 0) {
             g.pose().pushPose();
             g.pose().translate(x + CARD_W / 2f - 16, y + 48, 0);
             g.pose().scale(2.0f, 2.0f, 1.0f);
@@ -144,7 +146,7 @@ public class EvoKitScreen extends Screen {
             g.pose().popPose();
         }
 
-        EvoHubTheme.drawButton(g, this.font, "VEZI KIT", x + 10, y + 101, CARD_W - 20, 20, hover);
+        EvoHubTheme.drawButton(g, this.font, "VIEW KIT", x + 10, y + 101, CARD_W - 20, 20, hover);
     }
 
     private ItemStack renderKitPreview(GuiGraphics g, int smx, int smy, int x, int y, int sw) {
@@ -157,7 +159,7 @@ public class EvoKitScreen extends Screen {
         int slotSize = 36;
         ItemStack hoveredItem = null;
 
-        for (ItemStack item : previewingKit.items) {
+        if (previewingKit.items != null) for (ItemStack item : previewingKit.items) {
             boolean hoverSlot = isHover(smx, smy, itemX, itemY, slotSize, slotSize);
             EvoHubTheme.fillRounded(g, itemX, itemY, slotSize, slotSize, hoverSlot ? 0x884A6B38 : 0x55141C14);
             EvoHubTheme.outlineRounded(g, itemX, itemY, slotSize, slotSize, hoverSlot ? EvoHubTheme.ACCENT : EvoHubTheme.BORDER);

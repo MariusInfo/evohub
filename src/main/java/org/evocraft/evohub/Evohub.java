@@ -52,4 +52,9 @@ public class Evohub {
         org.evocraft.evohub.EvoCratesCommand.register(event.getDispatcher());
         LOGGER.info("[EvoHub] Comenzile /evo crate si /evo givekey au fost inregistrate!");
     }
+
+    @SubscribeEvent
+    public void onServerStopping(net.minecraftforge.event.server.ServerStoppingEvent event) {
+        EvoHubPacketHandler.shutdown();
+    }
 }

@@ -6,9 +6,9 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import org.evocraft.evocore.client.ClientHomeData;
-import org.evocraft.evocore.network.C2S_HomeActionPacket;
-import org.evocraft.evocore.network.PacketHandler;
+import org.evocraft.evoessentials.client.ClientHomeData;
+import org.evocraft.evoessentials.network.C2S_HomeActionPacket;
+import org.evocraft.evoessentials.network.EssentialsPacketHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -111,7 +111,7 @@ public class HomeScreen extends Screen {
     }
 
     private void teleportHome(String home) {
-        PacketHandler.INSTANCE.sendToServer(new C2S_HomeActionPacket("tp", home));
+        EssentialsPacketHandler.INSTANCE.sendToServer(new C2S_HomeActionPacket("tp", home));
         if (this.minecraft != null && this.minecraft.player != null) {
             this.minecraft.player.sendSystemMessage(Component.literal("§aTeleporting to home: §e" + home));
         }

@@ -21,10 +21,10 @@ import org.evocraft.evocore.client.ClientStatsData;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Mod.EventBusSubscriber(modid = "evohub", value = Dist.CLIENT)
 public class CustomTabListHandler {
@@ -34,7 +34,7 @@ public class CustomTabListHandler {
     private static final int PLAYERS_PER_PAGE = COLUMNS * ROWS;
     private static final int PAGE_DURATION_MS = 5000;
 
-    public static final Map<UUID, String> syncedRanks = new HashMap<>();
+    public static final Map<UUID, String> syncedRanks = new ConcurrentHashMap<>();
     public static long lastRankSync = 0;
 
     // Păstrăm funcțiile de bază, dar le vom folosi mai modern jos
@@ -263,7 +263,9 @@ public class CustomTabListHandler {
 
     private static boolean isValidPlayer(PlayerInfo info) {
         return info != null
+                && info.getProfile() != null
                 && info.getProfile().getName() != null
+                && info.getProfile().getId() != null
                 && info.getProfile().getId().version() != 2
                 && !ClientVanishData.vanishedPlayers.contains(info.getProfile().getId());
     }

@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Specification-Title: evohub
-Specification-Vendor: 
-Specification-Version: 1
-Implementation-Title: evohub
-Implementation-Version: 1.0.22
-Implementation-Vendor: 
-Implementation-Timestamp: 2026-07-11T16:59:02+0200
-

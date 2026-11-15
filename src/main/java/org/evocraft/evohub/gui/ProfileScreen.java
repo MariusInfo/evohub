@@ -120,7 +120,7 @@ public class ProfileScreen extends Screen {
 
                 int barY = rightY + 20;
                 fillRounded(g, rightX, barY, 130, 4, 0xFF333333);
-                float progress = Math.min(1.0f, Math.max(0.0f, (float) (job.currentXp / job.requiredXp)));
+                float progress = job.requiredXp > 0.0 ? Math.min(1.0f, Math.max(0.0f, (float) (job.currentXp / job.requiredXp))) : 0.0f;
                 int xpColor = i == 0 ? 0xFFFFD700 : (i == 1 ? 0xFFC0C0C0 : 0xFFCD7F32);
                 fillRounded(g, rightX, barY, (int) (130 * progress), 4, xpColor);
                 rightY += 35;

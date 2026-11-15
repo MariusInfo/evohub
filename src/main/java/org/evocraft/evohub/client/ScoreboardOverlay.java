@@ -116,6 +116,7 @@ public class ScoreboardOverlay {
     }
 
     public static void renderElements(GuiGraphics g, Minecraft mc, int screenWidth, int screenHeight, boolean editMode, HudElement selected) {
+        if (mc == null || mc.player == null || mc.font == null) return;
         for (HudElementBounds bounds : getVisibleElementBounds(mc, screenWidth, screenHeight)) {
             renderElement(g, mc, bounds);
             if (editMode) {
